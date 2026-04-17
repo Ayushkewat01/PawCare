@@ -77,8 +77,3 @@ PawCare utilizes a curated design system to maintain visual consistency and a pr
 - **Typography**: `Playfair Display` for elegant headings and `DM Sans` for readable, modern body text.
 - **Styling Details**: Frosted glass navigation bars, CSS transitions, and distinct content sections.
 
----
-
-<div align="center">
-  <p>Made with ❤️ by Ayush</p>
-</div>
