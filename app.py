@@ -22,10 +22,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # App Configuration
 # ─────────────────────────────────────────────
 app = Flask(__name__)
-app.secret_key = 'super_secret_pawcare_key_2025'
+app.secret_key = os.environ.get('SECRET_KEY', 'super_secret_pawcare_key_2025')
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH  = os.path.join(BASE_DIR, 'database.db')
+# Use /tmp on Vercel (serverless) — ephemeral but functional
+DB_PATH = '/tmp/database.db' if os.environ.get('VERCEL') else os.path.join(BASE_DIR, 'database.db')
 
 
 # ─────────────────────────────────────────────
