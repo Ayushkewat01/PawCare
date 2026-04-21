@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booking Confirmed — PawCare</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FDF8F2;
+    --sage: #7A9E7E;
+    --sage-dark: #4A6B4E;
+    --sage-light: #C8DEC9;
+    --charcoal: #2C2C2A;
+    --muted: #7A7A72;
+    --border: rgba(44,44,42,0.1);
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); min-height: 100vh; display: flex; flex-direction: column; }
+
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 4rem; background: white; border-bottom: 1px solid var(--border);
+  }
+  .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--charcoal); text-decoration: none; }
+  .logo span { color: var(--sage-dark); }
+
+  .page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 3rem 2rem; }
+
+  .success-card {
+    background: white; border-radius: 28px; padding: 3rem 2.5rem;
+    width: 100%; max-width: 520px; text-align: center;
+    box-shadow: 0 24px 64px rgba(44,44,42,0.12);
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.88); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .success-icon {
+    width: 90px; height: 90px; border-radius: 50%;
+    background: linear-gradient(135deg, #C8DEC9, #4A6B4E);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.8rem; margin: 0 auto 1.5rem;
+    animation: bounceIn 0.6s 0.2s both;
+  }
+
+  @keyframes bounceIn {
+    from { transform: scale(0); }
+    60%  { transform: scale(1.15); }
+    to   { transform: scale(1); }
+  }
+
+  .success-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;
+    color: var(--sage-dark);
+  }
+
+  .success-sub { color: var(--muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 2rem; }
+
+  .appt-details {
+    background: var(--cream); border-radius: 16px; padding: 1.5rem;
+    text-align: left; margin-bottom: 2rem;
+  }
+  .detail-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.5rem 0; border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-key { color: var(--muted); font-weight: 500; }
+  .detail-val { font-weight: 600; }
+
+  .btn-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--sage-dark); color: white; border: none;
+    padding: 0.85rem 2rem; border-radius: 50px; font-size: 0.95rem; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: var(--sage); transform: translateY(-2px); }
+  .btn-secondary {
+    background: transparent; color: var(--charcoal); border: 1.5px solid var(--charcoal);
+    padding: 0.85rem 2rem; border-radius: 50px; font-size: 0.95rem; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { background: var(--charcoal); color: white; transform: translateY(-2px); }
+
+  .confetti { font-size: 1.5rem; letter-spacing: 0.4rem; display: block; margin-bottom: 1rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Paw<span>Care</span></a>
+  <a href="/dashboard" style="font-size:0.9rem;color:var(--muted);text-decoration:none;">← My Dashboard</a>
+</nav>
+
+<div class="page">
+  <div class="success-card">
+    <div class="success-icon">🐾</div>
+    <span class="confetti">🎉 ✨ 🎊</span>
+    <div class="success-title">Appointment Confirmed!</div>
+    <div class="success-sub">
+      Your pet care appointment has been successfully booked. We'll see you soon!
+    </div>
+
+    {% if appt %}
+    <div class="appt-details">
+      <div class="detail-row">
+        <span class="detail-key">Booking ID</span>
+        <span class="detail-val">#{{ appt.id }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-key">Pet</span>
+        <span class="detail-val">{{ appt.pet_name }} ({{ appt.pet_type }})</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-key">Service</span>
+        <span class="detail-val">{{ appt.service }}</span>
+      </div>
+      {% if appt.doctor_name %}
+      <div class="detail-row">
+        <span class="detail-key">Doctor</span>
+        <span class="detail-val">{{ appt.doctor_name }}</span>
+      </div>
+      {% endif %}
+      <div class="detail-row">
+        <span class="detail-key">Date</span>
+        <span class="detail-val">{{ appt.pref_date }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-key">Payment</span>
+        <span class="detail-val" style="text-transform:capitalize;">{{ appt.payment_method }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-key">Status</span>
+        <span class="detail-val" style="color:var(--sage-dark);">{{ appt.status }}</span>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="btn-group">
+      <a href="/dashboard" class="btn-primary">Go to Dashboard →</a>
+      <a href="/appointments" class="btn-secondary">View All Appointments</a>
+    </div>
+
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

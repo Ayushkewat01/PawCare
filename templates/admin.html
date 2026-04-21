@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — PawCare</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FDF8F2;
+    --sage: #7A9E7E;
+    --sage-dark: #4A6B4E;
+    --sage-light: #C8DEC9;
+    --terracotta: #C97B4B;
+    --terracotta-light: #F2D5BC;
+    --charcoal: #2C2C2A;
+    --muted: #7A7A72;
+    --border: rgba(44,44,42,0.1);
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); min-height: 100vh; }
+
+  /* NAV */
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 3rem; background: var(--charcoal);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: white; text-decoration: none; }
+  .logo span { color: var(--sage-light); }
+  .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+  .nav-links a { text-decoration: none; font-size: 0.88rem; font-weight: 500; color: rgba(255,255,255,0.6); transition: color 0.2s; }
+  .nav-links a:hover { color: white; }
+  .nav-links .logout-btn { background: rgba(255,255,255,0.12); color: white; padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600; }
+
+  /* FLASH */
+  .flash-wrap { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 500; display: flex; flex-direction: column; gap: 0.5rem; width: 100%; max-width: 420px; pointer-events: none; }
+  .flash-toast { padding: 0.9rem 1.2rem; border-radius: 12px; text-align: center; font-size: 0.9rem; box-shadow: 0 8px 24px rgba(0,0,0,0.12); pointer-events: all; }
+  .flash-toast.success { background: #EAF3DE; color: #3B6D11; }
+  .flash-toast.error   { background: #FDE8E8; color: #9B1C1C; }
+  .flash-toast.info    { background: #E1EFFE; color: #1E429F; }
+
+  /* LAYOUT */
+  .admin-layout { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 65px); }
+
+  /* SIDEBAR */
+  .sidebar {
+    background: white; border-right: 1px solid var(--border);
+    padding: 2rem 1.2rem; position: sticky; top: 65px; height: calc(100vh - 65px); overflow-y: auto;
+  }
+  .sidebar-title { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; padding-left: 0.6rem; }
+  .sidebar-links { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 2rem; }
+  .sidebar-link {
+    display: flex; align-items: center; gap: 0.7rem;
+    padding: 0.65rem 0.9rem; border-radius: 10px; text-decoration: none;
+    font-size: 0.9rem; font-weight: 500; color: var(--muted); transition: all 0.2s;
+  }
+  .sidebar-link:hover, .sidebar-link.active { background: var(--sage-light); color: var(--sage-dark); }
+
+  /* MAIN CONTENT */
+  .main-content { padding: 2.5rem 3rem; }
+
+  /* STATS */
+  .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
+  .stat-card {
+    background: white; border-radius: 16px; padding: 1.3rem 1.2rem;
+    border: 1px solid var(--border); cursor: default;
+    transition: transform 0.2s;
+  }
+  .stat-card:hover { transform: translateY(-3px); }
+  .stat-card .s-icon { font-size: 1.4rem; margin-bottom: 0.5rem; display: block; }
+  .stat-card .s-num { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 700; color: var(--charcoal); line-height: 1; }
+  .stat-card .s-label { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
+
+  /* SECTION */
+  .section-title {
+    font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700;
+    margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: center;
+  }
+  .btn-sm {
+    background: var(--sage-dark); color: white; border: none;
+    padding: 0.5rem 1.2rem; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none;
+    transition: background 0.2s;
+  }
+  .btn-sm:hover { background: var(--sage); }
+  .btn-danger-sm {
+    background: #FDE8E8; color: #9B1C1C; border: none;
+    padding: 0.4rem 0.9rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; cursor: pointer; transition: background 0.2s;
+  }
+  .btn-danger-sm:hover { background: #f9c6c6; }
+
+  /* TABLES */
+  .table-wrap { background: white; border-radius: 18px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 2.5rem; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 0.85rem 1.2rem; text-align: left; border-bottom: 1px solid var(--border); }
+  th { background: var(--charcoal); color: white; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+  td { font-size: 0.88rem; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #F9F9F9; }
+
+  /* Badges */
+  .status-badge { display: inline-block; padding: 0.25rem 0.7rem; border-radius: 50px; font-size: 0.75rem; font-weight: 700; }
+  .avail-toggle form { display: inline; }
+  .toggle-btn {
+    border: none; padding: 0.35rem 0.8rem; border-radius: 50px; font-size: 0.75rem;
+    font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: opacity 0.2s;
+  }
+  .toggle-btn:hover { opacity: 0.8; }
+  .toggle-btn.available   { background: #EAF3DE; color: #3B6D11; }
+  .toggle-btn.unavailable { background: #FDE8E8; color: #9B1C1C; }
+
+  /* Status select */
+  .status-select { padding: 0.3rem 0.6rem; border-radius: 8px; border: 1px solid var(--border); font-size: 0.8rem; font-family: 'DM Sans', sans-serif; cursor: pointer; background: white; }
+
+  /* EMPTY */
+  .empty-row td { text-align: center; color: var(--muted); padding: 2rem; }
+
+  /* ADMIN BADGE */
+  .admin-role { background: var(--terracotta-light); color: var(--terracotta); padding: 0.2rem 0.6rem; border-radius: 50px; font-size: 0.72rem; font-weight: 700; }
+
+  @media (max-width: 1024px) {
+    .admin-layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .main-content { padding: 1.5rem; }
+    .stats-row { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Paw<span>Care</span></a>
+  <div class="nav-links">
+    <span style="color:rgba(255,255,255,0.4);font-size:0.82rem;">Admin Panel</span>
+    <a href="/">← Home</a>
+    <a href="/logout" class="logout-btn">Logout</a>
+  </div>
+</nav>
+
+<div class="flash-wrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash-toast {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+</div>
+
+<div class="admin-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Navigation</div>
+    <div class="sidebar-links">
+      <a href="#overview"     class="sidebar-link active">📊 Overview</a>
+      <a href="#appointments" class="sidebar-link">📅 Appointments</a>
+      <a href="#doctors"      class="sidebar-link">🩺 Doctors</a>
+      <a href="#users"        class="sidebar-link">👥 Users</a>
+    </div>
+    <div class="sidebar-title">Quick Actions</div>
+    <div class="sidebar-links">
+      <a href="/add_doctor" class="sidebar-link">➕ Add Doctor</a>
+      <a href="/" class="sidebar-link">🌐 View Site</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- STATS -->
+    <div id="overview">
+      <div class="section-title" style="margin-bottom:1.5rem;">
+        <span>📊 Overview</span>
+        <span style="font-size:0.8rem;color:var(--muted);font-family:'DM Sans',sans-serif;">Hello, Admin 👋</span>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="s-icon">👥</span>
+          <div class="s-num">{{ total_users }}</div>
+          <div class="s-label">Registered Users</div>
+        </div>
+        <div class="stat-card">
+          <span class="s-icon">📅</span>
+          <div class="s-num">{{ total_appts }}</div>
+          <div class="s-label">Total Appointments</div>
+        </div>
+        <div class="stat-card">
+          <span class="s-icon">⏳</span>
+          <div class="s-num">{{ pending_appts }}</div>
+          <div class="s-label">Pending</div>
+        </div>
+        <div class="stat-card">
+          <span class="s-icon">🩺</span>
+          <div class="s-num">{{ total_doctors }}</div>
+          <div class="s-label">Doctors</div>
+        </div>
+        <div class="stat-card">
+          <span class="s-icon">💳</span>
+          <div class="s-num">{{ total_paid }}</div>
+          <div class="s-label">Payments Paid</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div id="appointments">
+      <div class="section-title">
+        <span>📅 Recent Appointments</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Owner / Pet</th>
+              <th>Service</th>
+              <th>Doctor</th>
+              <th>Date</th>
+              <th>Payment</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in appointments %}
+            <tr>
+              <td style="color:var(--muted);">#{{ a.id }}</td>
+              <td>
+                <strong>{{ a.owner_name }}</strong><br>
+                <span style="font-size:0.8rem;color:var(--muted);">{{ a.pet_name }} ({{ a.pet_type }})</span>
+              </td>
+              <td>{{ a.service }}</td>
+              <td>{{ a.doctor_name or '—' }}</td>
+              <td>{{ a.pref_date }}</td>
+              <td>
+                <span class="status-badge">{{ a.payment_status or 'Pending' }}</span>
+              </td>
+              <td><span class="status-badge">{{ a.status }}</span></td>
+              <td>
+                <form method="POST" action="/update_appointment_status/{{ a.id }}" style="display:flex;gap:0.4rem;align-items:center;">
+                  <select name="status" class="status-select">
+                    <option {% if a.status=='Pending'   %}selected{% endif %}>Pending</option>
+                    <option {% if a.status=='Confirmed' %}selected{% endif %}>Confirmed</option>
+                    <option {% if a.status=='Completed' %}selected{% endif %}>Completed</option>
+                    <option {% if a.status=='Cancelled' %}selected{% endif %}>Cancelled</option>
+                  </select>
+                  <button type="submit" class="btn-sm" style="padding:0.35rem 0.8rem;font-size:0.78rem;">✓</button>
+                </form>
+              </td>
+            </tr>
+            {% else %}
+            <tr class="empty-row"><td colspan="8">No appointments yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DOCTORS -->
+    <div id="doctors">
+      <div class="section-title">
+        <span>🩺 Doctors</span>
+        <a href="/add_doctor" class="btn-sm">+ Add Doctor</a>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Specialization</th>
+              <th>Experience</th>
+              <th>Rating</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for d in doctors %}
+            <tr>
+              <td>{{ d.emoji }}</td>
+              <td><strong>{{ d.name }}</strong></td>
+              <td>{{ d.specialization }}</td>
+              <td>{{ d.experience }}</td>
+              <td>⭐ {{ d.rating }}</td>
+              <td>
+                <form method="POST" action="/toggle_doctor/{{ d.id }}" class="avail-toggle">
+                  <button type="submit" class="toggle-btn {{ d.status }}">
+                    {% if d.status == 'available' %}🟢 Available{% else %}🔴 Unavailable{% endif %}
+                  </button>
+                </form>
+              </td>
+              <td style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                <a href="/edit_doctor/{{ d.id }}" class="btn-sm">Edit</a>
+                <form method="POST" action="/delete_doctor/{{ d.id }}" style="display:inline;">
+                  <button type="submit" class="btn-danger-sm"
+                    data-confirm="Delete {{ d.name }}? This cannot be undone.">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% else %}
+            <tr class="empty-row"><td colspan="7">No doctors added yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div id="users">
+      <div class="section-title">
+        <span>👥 Registered Users</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>City</th>
+              <th>Role</th>
+              <th>Joined</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in users %}
+            <tr>
+              <td style="color:var(--muted);">#{{ u.id }}</td>
+              <td><strong>{{ u.name }}</strong></td>
+              <td>{{ u.email }}</td>
+              <td>{{ u.phone or '—' }}</td>
+              <td>{{ u.city or '—' }}</td>
+              <td>
+                {% if u.is_admin %}
+                  <span class="admin-role">Admin</span>
+                {% else %}
+                  <span style="font-size:0.82rem;color:var(--muted)">User</span>
+                {% endif %}
+              </td>
+              <td style="font-size:0.82rem;color:var(--muted);">{{ u.created_at[:10] if u.created_at else '—' }}</td>
+            </tr>
+            {% else %}
+            <tr class="empty-row"><td colspan="7">No users yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

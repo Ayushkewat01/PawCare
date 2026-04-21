@@ -3,915 +3,598 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PawCare — Pet Care & Consultation</title>
+<title>PawCare — Pet Care & Veterinary Management</title>
+<meta name="description" content="Professional veterinary consultations, wellness checks, and personalized pet care.">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --cream: #FDF8F2;
-    --warm-white: #FFFCF7;
-    --sage: #7A9E7E;
-    --sage-dark: #4A6B4E;
-    --sage-light: #C8DEC9;
-    --terracotta: #C97B4B;
-    --terracotta-light: #F2D5BC;
-    --charcoal: #2C2C2A;
-    --muted: #7A7A72;
-    --border: rgba(44,44,42,0.1);
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--charcoal);
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-
-  /* NAV */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.2rem 4rem;
-    background: rgba(253,248,242,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--charcoal);
-    text-decoration: none;
-    letter-spacing: -0.02em;
-  }
-
-  .logo span { color: var(--sage-dark); }
-
-  nav ul {
-    list-style: none;
-    display: flex;
-    gap: 2.5rem;
-    align-items: center;
-  }
-
-  nav ul a {
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--muted);
-    letter-spacing: 0.01em;
-    transition: color 0.2s;
-  }
-
-  nav ul a:hover { color: var(--charcoal); }
-
-  .nav-cta {
-    background: var(--sage-dark) !important;
-    color: white !important;
-    padding: 0.55rem 1.4rem;
-    border-radius: 50px;
-    transition: background 0.2s, transform 0.15s !important;
-  }
-
-  .nav-cta:hover { background: var(--sage) !important; transform: translateY(-1px); }
-
-  /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    padding: 7rem 4rem 4rem;
-    gap: 4rem;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -120px; right: -180px;
-    width: 700px; height: 700px;
-    border-radius: 50%;
-    background: var(--sage-light);
-    opacity: 0.25;
-    z-index: 0;
-  }
-
-  .hero-text { position: relative; z-index: 1; }
-
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--terracotta-light);
-    color: var(--terracotta);
-    font-size: 0.8rem;
-    font-weight: 600;
-    padding: 0.4rem 1rem;
-    border-radius: 50px;
-    margin-bottom: 1.5rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .hero h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2.8rem, 4vw, 4.2rem);
-    line-height: 1.15;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    margin-bottom: 1.2rem;
-    color: var(--charcoal);
-  }
-
-  .hero h1 em {
-    font-style: italic;
-    color: var(--sage-dark);
-  }
-
-  .hero-sub {
-    font-size: 1.1rem;
-    color: var(--muted);
-    font-weight: 300;
-    max-width: 440px;
-    margin-bottom: 2.5rem;
-    line-height: 1.8;
-  }
-
-  .hero-actions {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .btn-primary {
-    background: var(--sage-dark);
-    color: white;
-    border: none;
-    padding: 0.85rem 2rem;
-    border-radius: 50px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.15s;
-    text-decoration: none;
-    display: inline-block;
-  }
-
-  .btn-primary:hover { background: var(--sage); transform: translateY(-2px); }
-
-  .btn-secondary {
-    background: transparent;
-    color: var(--charcoal);
-    border: 1.5px solid var(--charcoal);
-    padding: 0.85rem 2rem;
-    border-radius: 50px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-decoration: none;
-    display: inline-block;
-  }
-
-  .btn-secondary:hover {
-    background: var(--charcoal);
-    color: white;
-    transform: translateY(-2px);
-  }
-
-  .hero-stats {
-    display: flex;
-    gap: 2.5rem;
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .stat-item { }
-  .stat-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--sage-dark);
-    line-height: 1;
-  }
-  .stat-label {
-    font-size: 0.8rem;
-    color: var(--muted);
-    font-weight: 400;
-    margin-top: 0.3rem;
-  }
-
-  .hero-visual {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .hero-card-main {
-    background: white;
-    border-radius: 28px;
-    padding: 0;
-    overflow: hidden;
-    box-shadow: 0 24px 64px rgba(44,44,42,0.12);
-    width: 100%;
-    max-width: 420px;
-    position: relative;
-  }
-
-  .hero-img-placeholder {
-    background: linear-gradient(135deg, #C8DEC9 0%, #7A9E7E 100%);
-    height: 280px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 6rem;
-  }
-
-  .hero-card-info {
-    padding: 1.5rem;
-  }
-
-  .vet-info {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    margin-bottom: 1rem;
-  }
-
-  .vet-avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--terracotta-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    color: var(--terracotta);
-    font-size: 0.85rem;
-  }
-
-  .vet-name { font-weight: 600; font-size: 0.95rem; }
-  .vet-title { font-size: 0.8rem; color: var(--muted); }
-
-  .online-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    background: #EAF3DE;
-    color: #3B6D11;
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.3rem 0.8rem;
-    border-radius: 50px;
-    margin-left: auto;
-  }
-
-  .online-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #3B6D11;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  .floating-tag {
-    position: absolute;
-    background: white;
-    border-radius: 16px;
-    padding: 0.7rem 1rem;
-    box-shadow: 0 8px 24px rgba(44,44,42,0.14);
-    font-size: 0.8rem;
-    font-weight: 500;
-  }
-
-  .tag-1 { top: 20px; right: -20px; }
-  .tag-2 { bottom: 80px; left: -30px; }
-
-  /* SERVICES */
-  .section {
-    padding: 6rem 4rem;
-  }
-
-  .section-label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--sage-dark);
-    margin-bottom: 0.8rem;
-  }
-
-  .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2rem, 3vw, 2.8rem);
-    font-weight: 700;
-    letter-spacing: -0.025em;
-    line-height: 1.2;
-    margin-bottom: 1rem;
-    max-width: 540px;
-  }
-
-  .section-sub {
-    color: var(--muted);
-    font-size: 1rem;
-    max-width: 500px;
-    line-height: 1.8;
-    margin-bottom: 3.5rem;
-  }
-
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-
-  .service-card {
-    background: white;
-    border-radius: 20px;
-    padding: 2rem;
-    border: 1px solid var(--border);
-    transition: transform 0.25s, box-shadow 0.25s;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .service-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--sage-dark);
-    transform: scaleX(0);
-    transition: transform 0.25s;
-    transform-origin: left;
-  }
-
-  .service-card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(44,44,42,0.1); }
-  .service-card:hover::after { transform: scaleX(1); }
-
-  .service-icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
-    background: var(--sage-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    margin-bottom: 1.2rem;
-  }
-
-  .service-card h3 {
-    font-size: 1.05rem;
-    font-weight: 600;
-    margin-bottom: 0.6rem;
-    color: var(--charcoal);
-  }
-
-  .service-card p {
-    font-size: 0.88rem;
-    color: var(--muted);
-    line-height: 1.7;
-  }
-
-  .service-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--sage-dark);
-    text-decoration: none;
-    margin-top: 1rem;
-  }
-
-  /* ABOUT / SPLIT */
-  .about-section {
-    background: white;
-    padding: 6rem 4rem;
-  }
-
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5rem;
-    align-items: center;
-  }
-
-  .about-visual {
-    position: relative;
-  }
-
-  .about-img {
-    background: var(--sage-light);
-    border-radius: 24px;
-    height: 460px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 7rem;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .about-accent {
-    position: absolute;
-    bottom: -20px; right: -20px;
-    background: var(--terracotta-light);
-    border-radius: 20px;
-    padding: 1.5rem;
-    box-shadow: 0 8px 24px rgba(44,44,42,0.1);
-  }
-
-  .about-accent-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: var(--terracotta);
-    line-height: 1;
-  }
-
-  .about-accent-label {
-    font-size: 0.78rem;
-    color: var(--terracotta);
-    opacity: 0.7;
-    margin-top: 0.25rem;
-  }
-
-  .feature-list {
-    list-style: none;
-    margin-top: 2rem;
-  }
-
-  .feature-list li {
-    display: flex;
-    gap: 0.8rem;
-    align-items: flex-start;
-    margin-bottom: 1.2rem;
-    font-size: 0.95rem;
-    color: var(--muted);
-  }
-
-  .check {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--sage-light);
-    color: var(--sage-dark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    font-weight: 700;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  /* VETS */
-  .vets-section {
-    padding: 6rem 4rem;
-    background: var(--warm-white);
-  }
-
-  .vets-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    margin-top: 3rem;
-  }
-
-  .vet-card {
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    transition: transform 0.25s, box-shadow 0.25s;
-  }
-
-  .vet-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(44,44,42,0.1); }
-
-  .vet-img {
-    height: 180px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 3.5rem;
-  }
-
-  .vet-body { padding: 1.2rem; }
-
-  .vet-card-name {
-    font-weight: 600;
-    font-size: 0.95rem;
-    margin-bottom: 0.2rem;
-  }
-
-  .vet-card-spec {
-    font-size: 0.8rem;
-    color: var(--sage-dark);
-    font-weight: 500;
-    margin-bottom: 0.8rem;
-  }
-
-  .vet-card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 0.8rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .stars {
-    color: var(--terracotta);
-    font-size: 0.75rem;
-    letter-spacing: 1px;
-  }
-
-  .book-link {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--sage-dark);
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  /* BOOKING */
-  .booking-section {
-    background: var(--sage-dark);
-    padding: 6rem 4rem;
-    color: white;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .booking-section::before {
-    content: '';
-    position: absolute;
-    top: -100px; right: -100px;
-    width: 500px; height: 500px;
-    background: var(--sage);
-    border-radius: 50%;
-    opacity: 0.3;
-  }
-
-  .booking-inner {
-    display: grid;
-    grid-template-columns: 1fr 1.2fr;
-    gap: 5rem;
-    align-items: center;
-    position: relative;
-    z-index: 1;
-  }
-
-  .booking-text h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2rem, 2.5vw, 2.8rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    margin-bottom: 1rem;
-  }
-
-  .booking-text p {
-    opacity: 0.75;
-    font-size: 1rem;
-    line-height: 1.8;
-    margin-bottom: 2rem;
-  }
-
-  .booking-form {
-    background: white;
-    border-radius: 24px;
-    padding: 2rem;
-  }
-
-  .form-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--charcoal);
-    margin-bottom: 1.5rem;
-  }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .form-group {
-    margin-bottom: 1rem;
-  }
-
-  .form-group label {
-    display: block;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin-bottom: 0.4rem;
-  }
-
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    width: 100%;
-    padding: 0.7rem 1rem;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    font-size: 0.9rem;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--charcoal);
-    background: var(--cream);
-    outline: none;
-    transition: border-color 0.2s;
-    appearance: none;
-  }
-
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus {
-    border-color: var(--sage-dark);
-  }
-
-  .form-group textarea { height: 80px; resize: none; }
-
-  .form-submit {
-    width: 100%;
-    background: var(--sage-dark);
-    color: white;
-    border: none;
-    padding: 0.9rem;
-    border-radius: 12px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: background 0.2s;
-    margin-top: 0.5rem;
-  }
-
-  .form-submit:hover { background: var(--sage); }
-
-  /* TESTIMONIALS */
-  .testimonials-section {
-    padding: 6rem 4rem;
-  }
-
-  .testimonials-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    margin-top: 3rem;
-  }
-
-  .testimonial-card {
-    background: white;
-    border-radius: 20px;
-    padding: 2rem;
-    border: 1px solid var(--border);
-    position: relative;
-  }
-
-  .quote-mark {
-    font-family: 'Playfair Display', serif;
-    font-size: 4rem;
-    line-height: 1;
-    color: var(--sage-light);
-    position: absolute;
-    top: 1rem; right: 1.5rem;
-    font-weight: 700;
-  }
-
-  .testimonial-text {
-    font-size: 0.92rem;
-    color: var(--muted);
-    line-height: 1.8;
-    margin-bottom: 1.5rem;
-  }
-
-  .testimonial-author {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-  }
-
-  .author-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 0.85rem;
-  }
-
-  .author-name { font-weight: 600; font-size: 0.9rem; }
-  .author-pet { font-size: 0.78rem; color: var(--muted); }
-
-  /* FOOTER */
-  footer {
-    background: var(--charcoal);
-    color: white;
-    padding: 4rem 4rem 2rem;
-  }
-
-  .footer-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 3rem;
-    margin-bottom: 3rem;
-  }
-
-  .footer-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.6rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: white;
-  }
-
-  .footer-logo span { color: var(--sage-light); }
-
-  .footer-desc {
-    font-size: 0.88rem;
-    color: rgba(255,255,255,0.5);
-    line-height: 1.8;
-    margin-bottom: 1.5rem;
-  }
-
-  .footer-socials {
-    display: flex;
-    gap: 0.8rem;
-  }
-
-  .social-btn {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: background 0.2s, border-color 0.2s;
-    text-decoration: none;
-    color: white;
-  }
-
-  .social-btn:hover { background: var(--sage); border-color: var(--sage); }
-
-  .footer-col h4 {
-    font-size: 0.82rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.6);
-    margin-bottom: 1rem;
-  }
-
-  .footer-col ul { list-style: none; }
-  .footer-col ul li { margin-bottom: 0.6rem; }
-  .footer-col ul a {
-    text-decoration: none;
-    font-size: 0.88rem;
-    color: rgba(255,255,255,0.55);
-    transition: color 0.2s;
-  }
-  .footer-col ul a:hover { color: white; }
-
-  .footer-bottom {
-    border-top: 1px solid rgba(255,255,255,0.1);
-    padding-top: 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .footer-bottom p {
-    font-size: 0.82rem;
-    color: rgba(255,255,255,0.35);
-  }
-
-  /* RESPONSIVE */
-  @media (max-width: 900px) {
-    nav { padding: 1rem 2rem; }
-    nav ul { display: none; }
-    .hero { grid-template-columns: 1fr; padding: 6rem 2rem 3rem; }
-    .hero-visual { display: none; }
-    .section, .about-section, .vets-section, .booking-section, .testimonials-section { padding: 4rem 2rem; }
-    .services-grid { grid-template-columns: 1fr; }
-    .about-grid { grid-template-columns: 1fr; }
-    .vets-grid { grid-template-columns: 1fr 1fr; }
-    .booking-inner { grid-template-columns: 1fr; gap: 2rem; }
-    .testimonials-grid { grid-template-columns: 1fr; }
-    .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
-    .footer { padding: 3rem 2rem 1.5rem; }
-  }
-
-  /* ANIMATIONS */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .hero-text > * {
-    animation: fadeUp 0.7s ease both;
-  }
-
-  .hero-badge { animation-delay: 0.1s; }
-  .hero h1 { animation-delay: 0.2s; }
-  .hero-sub { animation-delay: 0.3s; }
-  .hero-actions { animation-delay: 0.4s; }
-  .hero-stats { animation-delay: 0.5s; }
+/* ════════════════════════════════════════════
+   DESIGN SYSTEM
+════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream:            #FDF8F2;
+  --warm-white:       #FFFCF7;
+  --sage:             #7A9E7E;
+  --sage-dark:        #4A6B4E;
+  --sage-light:       #C8DEC9;
+  --terracotta:       #C97B4B;
+  --terracotta-light: #F2D5BC;
+  --charcoal:         #2C2C2A;
+  --muted:            #7A7A72;
+  --border:           rgba(44,44,42,0.1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--charcoal);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── Page sections — only the active one is shown ── */
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+/* Auth pages need centered layout */
+.auth-page { display: none; align-items: center; justify-content: center; min-height: 100vh; }
+.auth-page.active { display: flex; }
+
+/* ════════════════════════════════════════════
+   SHARED NAV
+════════════════════════════════════════════ */
+.main-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem 3rem;
+  background: rgba(253,248,242,0.95);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+.logo { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--charcoal); text-decoration:none; }
+.logo span { color:var(--sage-dark); }
+.nav-links { display:flex; gap:1.4rem; align-items:center; }
+.nav-links a { text-decoration:none; font-size:0.88rem; font-weight:500; color:var(--muted); transition:color .2s; }
+.nav-links a:hover { color:var(--sage-dark); }
+.nav-cta { background:var(--sage-dark)!important; color:white!important; padding:.45rem 1.1rem; border-radius:50px; font-weight:600!important; transition:background .2s!important; }
+.nav-cta:hover { background:var(--sage)!important; }
+.nav-admin { color:var(--terracotta)!important; font-weight:700!important; }
+
+/* Admin nav */
+.admin-nav {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:1rem 3rem; background:var(--charcoal); position:sticky; top:0; z-index:200;
+}
+.admin-nav .logo { color:white; }
+.admin-nav .logo span { color:var(--sage-light); }
+.admin-nav a { color:rgba(255,255,255,.6); text-decoration:none; font-size:.88rem; }
+.admin-nav a:hover { color:white; }
+.admin-nav .logout-pill { background:rgba(255,255,255,.12); color:white!important; padding:.4rem 1rem; border-radius:50px; font-weight:600; }
+
+/* ════════════════════════════════════════════
+   FLASH MESSAGES
+════════════════════════════════════════════ */
+.flash-container {
+  position:fixed; top:76px; left:50%; transform:translateX(-50%);
+  z-index:999; display:flex; flex-direction:column; gap:.5rem;
+  width:100%; max-width:420px; pointer-events:none;
+}
+.flash {
+  padding:.9rem 1.2rem; border-radius:12px; text-align:center;
+  font-size:.9rem; box-shadow:0 8px 24px rgba(0,0,0,.12);
+  pointer-events:all; animation:slideDown .3s ease;
+}
+.flash.success { background:#EAF3DE; color:#3B6D11; }
+.flash.error   { background:#FDE8E8; color:#9B1C1C; }
+.flash.info    { background:#E1EFFE; color:#1E429F; }
+@keyframes slideDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+
+/* ════════════════════════════════════════════
+   AUTH PAGES (LOGIN / SIGNUP)
+════════════════════════════════════════════ */
+.auth-bg {
+  min-height:100vh; width:100%;
+  background: linear-gradient(135deg, var(--sage-light) 0%, var(--cream) 100%);
+  display:flex; align-items:center; justify-content:center; padding:2rem;
+}
+.auth-card {
+  background:white; border-radius:28px; padding:3rem;
+  width:100%; max-width:420px;
+  box-shadow:0 24px 64px rgba(44,44,42,0.14);
+}
+.auth-logo { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--charcoal); text-align:center; display:block; margin-bottom:0.4rem; text-decoration:none; }
+.auth-logo span { color:var(--sage-dark); }
+.auth-tagline { text-align:center; color:var(--muted); font-size:.88rem; margin-bottom:2rem; }
+.form-group { margin-bottom:1.4rem; }
+.form-group label { display:block; font-size:.78rem; font-weight:700; color:var(--muted); letter-spacing:.06em; text-transform:uppercase; margin-bottom:.4rem; }
+.form-group input, .form-group select, .form-group textarea {
+  width:100%; padding:.8rem 1rem; border:1.5px solid var(--border);
+  border-radius:12px; font-size:.95rem; font-family:'DM Sans',sans-serif;
+  color:var(--charcoal); background:var(--cream); outline:none; transition:border-color .2s;
+  appearance:none;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--sage-dark); }
+.form-group input[readonly] { opacity:.6; cursor:not-allowed; }
+.form-group textarea { height:80px; resize:none; }
+.btn-submit {
+  width:100%; background:var(--sage-dark); color:white; border:none;
+  padding:1rem; border-radius:14px; font-size:1rem; font-weight:700;
+  font-family:'DM Sans',sans-serif; cursor:pointer; transition:background .2s, transform .15s;
+  margin-top:.3rem;
+}
+.btn-submit:hover { background:var(--sage); transform:translateY(-1px); }
+.auth-switch { text-align:center; margin-top:1.5rem; font-size:.9rem; color:var(--muted); }
+.auth-switch a { color:var(--sage-dark); font-weight:700; text-decoration:none; }
+.auth-switch a:hover { text-decoration:underline; }
+
+/* ════════════════════════════════════════════
+   HOME PAGE
+════════════════════════════════════════════ */
+.hero {
+  min-height:100vh; display:grid; grid-template-columns:1fr 1fr;
+  align-items:center; padding:7rem 4rem 4rem; gap:4rem;
+  position:relative; overflow:hidden;
+}
+.hero::before {
+  content:''; position:absolute; top:-120px; right:-180px;
+  width:700px; height:700px; border-radius:50%;
+  background:var(--sage-light); opacity:.25; z-index:0;
+}
+.hero-text { position:relative; z-index:1; }
+.hero-badge {
+  display:inline-flex; align-items:center; gap:.5rem;
+  background:var(--terracotta-light); color:var(--terracotta);
+  font-size:.8rem; font-weight:700; padding:.4rem 1rem; border-radius:50px;
+  margin-bottom:1.5rem; letter-spacing:.05em; text-transform:uppercase;
+}
+.hero h1 {
+  font-family:'Playfair Display',serif; font-size:clamp(2.6rem,4vw,4rem);
+  line-height:1.15; font-weight:700; letter-spacing:-.03em; margin-bottom:1.2rem;
+}
+.hero h1 em { font-style:italic; color:var(--sage-dark); }
+.hero-sub { font-size:1.05rem; color:var(--muted); font-weight:300; max-width:440px; margin-bottom:2.5rem; line-height:1.8; }
+.hero-actions { display:flex; gap:1rem; flex-wrap:wrap; align-items:center; }
+.btn-primary {
+  background:var(--sage-dark); color:white; border:none;
+  padding:.85rem 2rem; border-radius:50px; font-size:.95rem; font-weight:600;
+  font-family:'DM Sans',sans-serif; cursor:pointer; transition:background .2s, transform .15s;
+  text-decoration:none; display:inline-block;
+}
+.btn-primary:hover { background:var(--sage); transform:translateY(-2px); }
+.btn-secondary {
+  background:transparent; color:var(--charcoal); border:1.5px solid var(--charcoal);
+  padding:.85rem 2rem; border-radius:50px; font-size:.95rem; font-weight:600;
+  font-family:'DM Sans',sans-serif; cursor:pointer; transition:all .2s;
+  text-decoration:none; display:inline-block;
+}
+.btn-secondary:hover { background:var(--charcoal); color:white; transform:translateY(-2px); }
+.hero-stats { display:flex; gap:2.5rem; margin-top:3rem; padding-top:2rem; border-top:1px solid var(--border); }
+.stat-num { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--sage-dark); line-height:1; }
+.stat-label { font-size:.8rem; color:var(--muted); margin-top:.3rem; }
+.hero-visual { position:relative; z-index:1; display:flex; justify-content:center; align-items:center; }
+.hero-card-main { background:white; border-radius:28px; overflow:hidden; box-shadow:0 24px 64px rgba(44,44,42,.12); width:100%; max-width:380px; }
+.hero-img-placeholder { background:linear-gradient(135deg,#C8DEC9,#7A9E7E); height:260px; display:flex; align-items:center; justify-content:center; font-size:6rem; }
+.hero-card-info { padding:1.5rem; }
+.vet-info { display:flex; align-items:center; gap:.8rem; }
+.vet-avatar { width:44px; height:44px; border-radius:50%; background:var(--terracotta-light); display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--terracotta); font-size:.85rem; }
+.vet-name { font-weight:700; font-size:.95rem; }
+.vet-title { font-size:.8rem; color:var(--muted); }
+.online-badge { display:inline-flex; align-items:center; gap:.4rem; background:#EAF3DE; color:#3B6D11; font-size:.75rem; font-weight:700; padding:.3rem .8rem; border-radius:50px; margin-left:auto; }
+.online-dot { width:7px; height:7px; border-radius:50%; background:#3B6D11; animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* SERVICES */
+.section { padding:6rem 4rem; }
+.section-label { font-size:.8rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--sage-dark); margin-bottom:.8rem; }
+.section-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,3vw,2.8rem); font-weight:700; letter-spacing:-.025em; line-height:1.2; margin-bottom:1rem; max-width:540px; }
+.section-sub { color:var(--muted); font-size:1rem; max-width:500px; line-height:1.8; margin-bottom:3.5rem; }
+.services-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+.service-card { background:white; border-radius:20px; padding:2rem; border:1px solid var(--border); transition:transform .25s, box-shadow .25s; cursor:pointer; position:relative; overflow:hidden; }
+.service-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:var(--sage-dark); transform:scaleX(0); transition:transform .25s; transform-origin:left; }
+.service-card:hover { transform:translateY(-5px); box-shadow:0 16px 48px rgba(44,44,42,.1); }
+.service-card:hover::after { transform:scaleX(1); }
+.service-icon { width:52px; height:52px; border-radius:14px; background:var(--sage-light); display:flex; align-items:center; justify-content:center; font-size:1.5rem; margin-bottom:1.2rem; }
+.service-card h3 { font-size:1.05rem; font-weight:700; margin-bottom:.6rem; }
+.service-card p { font-size:.88rem; color:var(--muted); line-height:1.7; }
+.service-link { display:inline-flex; align-items:center; gap:.4rem; font-size:.85rem; font-weight:700; color:var(--sage-dark); text-decoration:none; margin-top:1rem; }
+
+/* VETS SECTION */
+.vets-section { padding:6rem 4rem; background:var(--warm-white); }
+.vets-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; margin-top:2rem; }
+.vet-card { background:white; border-radius:20px; overflow:hidden; border:1px solid var(--border); transition:transform .25s, box-shadow .25s; }
+.vet-card:hover { transform:translateY(-5px); box-shadow:0 16px 40px rgba(44,44,42,.1); }
+.vet-img { height:160px; display:flex; align-items:center; justify-content:center; font-size:3.5rem; }
+.vet-body { padding:1.2rem; }
+.vet-card-name { font-weight:700; font-size:.95rem; margin-bottom:.15rem; }
+.vet-card-spec { font-size:.8rem; color:var(--sage-dark); font-weight:600; margin-bottom:.4rem; }
+.vet-card-footer { display:flex; justify-content:space-between; align-items:center; padding-top:.8rem; border-top:1px solid var(--border); }
+.avail-badge { font-size:.72rem; font-weight:700; padding:.2rem .7rem; border-radius:50px; }
+.avail-available   { background:#EAF3DE; color:#3B6D11; }
+.avail-unavailable { background:#FDE8E8; color:#9B1C1C; }
+.book-now-btn { background:none; border:none; font-family:'DM Sans',sans-serif; font-size:.8rem; font-weight:700; color:var(--sage-dark); cursor:pointer; padding:0; }
+.book-now-btn:hover { text-decoration:underline; }
+
+/* Filter pills */
+.filter-pills { display:flex; flex-wrap:wrap; gap:.6rem; justify-content:center; margin:1.5rem 0; }
+.filter-pill { background:white; border:1.5px solid var(--border); color:var(--muted); padding:.45rem 1.1rem; border-radius:50px; font-size:.82rem; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .2s; }
+.filter-pill:hover, .filter-pill.active { background:var(--sage-dark); border-color:var(--sage-dark); color:white; }
+
+/* BOOKING SECTION */
+.booking-section { background:var(--sage-dark); padding:6rem 4rem; color:white; position:relative; overflow:hidden; }
+.booking-section::before { content:''; position:absolute; top:-100px; right:-100px; width:500px; height:500px; background:var(--sage); border-radius:50%; opacity:.3; }
+.booking-inner { display:grid; grid-template-columns:1fr 1.2fr; gap:5rem; align-items:center; position:relative; z-index:1; }
+.booking-text h2 { font-family:'Playfair Display',serif; font-size:clamp(2rem,2.5vw,2.8rem); font-weight:700; letter-spacing:-.02em; line-height:1.2; margin-bottom:1rem; }
+.booking-text p { opacity:.75; font-size:1rem; line-height:1.8; margin-bottom:2rem; }
+.booking-form { background:white; border-radius:24px; padding:2rem; }
+.form-title { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:var(--charcoal); margin-bottom:1.5rem; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem; }
+.booking-form .form-group { margin-bottom:1rem; }
+.booking-form .form-group label { color:var(--muted); font-size:.78rem; }
+.booking-form .form-group input,
+.booking-form .form-group select,
+.booking-form .form-group textarea { background:var(--cream); }
+.form-submit { width:100%; background:var(--sage-dark); color:white; border:none; padding:.9rem; border-radius:12px; font-size:.95rem; font-weight:700; font-family:'DM Sans',sans-serif; cursor:pointer; transition:background .2s; margin-top:.5rem; }
+.form-submit:hover { background:var(--sage); }
+
+/* TESTIMONIALS */
+.testimonials-section { padding:6rem 4rem; }
+.testimonials-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:3rem; }
+.testimonial-card { background:white; border-radius:20px; padding:2rem; border:1px solid var(--border); position:relative; }
+.quote-mark { font-family:'Playfair Display',serif; font-size:4rem; line-height:1; color:var(--sage-light); position:absolute; top:1rem; right:1.5rem; font-weight:700; }
+.testimonial-text { font-size:.92rem; color:var(--muted); line-height:1.8; margin-bottom:1.5rem; }
+.testimonial-author { display:flex; align-items:center; gap:.8rem; }
+.author-avatar { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85rem; }
+.author-name { font-weight:700; font-size:.9rem; }
+.author-pet { font-size:.78rem; color:var(--muted); }
+
+/* FOOTER */
+footer { background:var(--charcoal); color:white; padding:4rem 4rem 2rem; }
+.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:3rem; margin-bottom:3rem; }
+.footer-logo { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; margin-bottom:1rem; }
+.footer-logo span { color:var(--sage-light); }
+.footer-desc { font-size:.88rem; color:rgba(255,255,255,.5); line-height:1.8; margin-bottom:1.5rem; }
+.footer-socials { display:flex; gap:.8rem; }
+.social-btn { width:36px; height:36px; border-radius:50%; border:1px solid rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:.8rem; cursor:pointer; transition:background .2s; text-decoration:none; color:white; }
+.social-btn:hover { background:var(--sage); border-color:var(--sage); }
+.footer-col h4 { font-size:.78rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.5); margin-bottom:1rem; }
+.footer-col ul { list-style:none; }
+.footer-col ul li { margin-bottom:.6rem; }
+.footer-col ul a { text-decoration:none; font-size:.88rem; color:rgba(255,255,255,.5); transition:color .2s; }
+.footer-col ul a:hover { color:white; }
+.footer-bottom { border-top:1px solid rgba(255,255,255,.1); padding-top:1.5rem; display:flex; justify-content:space-between; }
+.footer-bottom p { font-size:.82rem; color:rgba(255,255,255,.35); }
+
+/* ════════════════════════════════════════════
+   DASHBOARD
+════════════════════════════════════════════ */
+.dash-wrap { padding:2.5rem 3rem; max-width:1200px; margin:0 auto; }
+.page-heading { margin-bottom:2rem; }
+.page-heading h1 { font-family:'Playfair Display',serif; font-size:1.9rem; font-weight:700; margin-bottom:.3rem; }
+.page-heading h1 span { color:var(--sage-dark); }
+.page-heading p { color:var(--muted); font-size:.92rem; }
+
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1.2rem; margin-bottom:2.5rem; }
+.stat-card { background:white; border-radius:18px; padding:1.5rem; border:1px solid var(--border); display:flex; align-items:center; gap:1rem; transition:transform .2s; }
+.stat-card:hover { transform:translateY(-3px); }
+.stat-icon-box { width:48px; height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; }
+.stat-card .s-num { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:700; line-height:1; }
+.stat-card .s-label { font-size:.75rem; color:var(--muted); margin-top:.25rem; }
+
+.quick-book { background:var(--sage-dark); border-radius:20px; padding:2rem; display:flex; align-items:center; justify-content:space-between; margin-bottom:2.5rem; color:white; }
+.quick-book h3 { font-family:'Playfair Display',serif; font-size:1.3rem; margin-bottom:.3rem; }
+.quick-book p { opacity:.75; font-size:.9rem; }
+.btn-white { background:white; color:var(--sage-dark); border:none; padding:.75rem 1.8rem; border-radius:50px; font-size:.9rem; font-weight:700; cursor:pointer; text-decoration:none; transition:transform .2s; display:inline-block; }
+.btn-white:hover { transform:scale(1.04); }
+
+.section-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem; }
+.section-row h2 { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; }
+.see-all { font-size:.85rem; font-weight:700; color:var(--sage-dark); text-decoration:none; }
+.see-all:hover { text-decoration:underline; }
+
+.mini-doc-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2.5rem; }
+.mini-doc-card { background:white; border-radius:16px; overflow:hidden; border:1px solid var(--border); transition:transform .2s; }
+.mini-doc-card:hover { transform:translateY(-3px); }
+.mini-doc-img { height:100px; display:flex; align-items:center; justify-content:center; font-size:2.5rem; }
+.mini-doc-body { padding:.9rem; }
+.mini-doc-name { font-weight:700; font-size:.85rem; margin-bottom:.1rem; }
+.mini-doc-spec { font-size:.75rem; color:var(--sage-dark); font-weight:600; margin-bottom:.5rem; }
+.mini-doc-footer { display:flex; justify-content:space-between; align-items:center; padding-top:.5rem; border-top:1px solid var(--border); }
+.book-link { font-size:.75rem; font-weight:700; color:var(--sage-dark); text-decoration:none; }
+.book-link:hover { text-decoration:underline; }
+
+/* ════════════════════════════════════════════
+   TABLE (shared)
+════════════════════════════════════════════ */
+.table-wrap { background:white; border-radius:18px; overflow:hidden; border:1px solid var(--border); margin-bottom:2rem; }
+table { width:100%; border-collapse:collapse; }
+th, td { padding:.85rem 1.2rem; text-align:left; border-bottom:1px solid var(--border); }
+th { background:var(--charcoal); color:white; font-size:.78rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+td { font-size:.88rem; vertical-align:middle; }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:#F9F9F9; }
+.status-badge { display:inline-block; padding:.25rem .7rem; border-radius:50px; font-size:.75rem; font-weight:700; }
+.empty-state { text-align:center; padding:3rem; color:var(--muted); }
+.empty-icon { font-size:3rem; display:block; margin-bottom:.8rem; }
+
+/* ════════════════════════════════════════════
+   APPOINTMENTS PAGE
+════════════════════════════════════════════ */
+.appt-list { display:flex; flex-direction:column; gap:1rem; }
+.appt-card { background:white; border-radius:18px; padding:1.5rem; border:1px solid var(--border); display:grid; grid-template-columns:auto 1fr auto; gap:1.2rem; align-items:center; transition:box-shadow .2s; }
+.appt-card:hover { box-shadow:0 8px 24px rgba(44,44,42,.08); }
+.appt-icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:1.6rem; flex-shrink:0; }
+.appt-pet { font-weight:700; font-size:1rem; margin-bottom:.2rem; }
+.appt-service { font-size:.88rem; color:var(--muted); margin-bottom:.4rem; }
+.appt-meta { display:flex; flex-wrap:wrap; gap:.8rem; font-size:.8rem; color:var(--muted); }
+.appt-right { text-align:right; flex-shrink:0; }
+
+/* ════════════════════════════════════════════
+   PROFILE PAGE
+════════════════════════════════════════════ */
+.profile-wrap { max-width:900px; margin:0 auto; padding:2.5rem 3rem; }
+.profile-header { display:flex; align-items:center; gap:1.5rem; margin-bottom:2.5rem; background:white; border-radius:20px; padding:2rem; border:1px solid var(--border); }
+.avatar { width:80px; height:80px; border-radius:50%; background:var(--sage-light); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--sage-dark); flex-shrink:0; }
+.profile-title-name { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; }
+.profile-email { color:var(--muted); font-size:.9rem; margin-top:.2rem; }
+.stat-chips { display:flex; gap:1rem; flex-wrap:wrap; margin-top:.8rem; }
+.stat-chip { background:var(--sage-light); color:var(--sage-dark); padding:.3rem .9rem; border-radius:50px; font-size:.8rem; font-weight:700; }
+.cards-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+.profile-card { background:white; border-radius:20px; padding:2rem; border:1px solid var(--border); }
+.card-title { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; margin-bottom:1.5rem; }
+.btn-save { width:100%; background:var(--sage-dark); color:white; border:none; padding:.85rem; border-radius:12px; font-size:.95rem; font-weight:700; font-family:'DM Sans',sans-serif; cursor:pointer; transition:background .2s; }
+.btn-save:hover { background:var(--sage); }
+.quick-links { display:flex; flex-direction:column; gap:.7rem; margin-top:.3rem; }
+.quick-links a { color:var(--sage-dark); font-weight:700; font-size:.9rem; text-decoration:none; }
+.quick-links a:hover { text-decoration:underline; }
+
+/* ════════════════════════════════════════════
+   ADMIN PANEL
+════════════════════════════════════════════ */
+.admin-layout { display:grid; grid-template-columns:220px 1fr; min-height:calc(100vh - 62px); }
+.sidebar { background:white; border-right:1px solid var(--border); padding:2rem 1rem; position:sticky; top:62px; height:calc(100vh - 62px); overflow-y:auto; }
+.sidebar-title { font-size:.7rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:.75rem; padding-left:.6rem; }
+.sidebar-links { display:flex; flex-direction:column; gap:.25rem; margin-bottom:2rem; }
+.sidebar-link { display:flex; align-items:center; gap:.7rem; padding:.65rem .9rem; border-radius:10px; text-decoration:none; font-size:.9rem; font-weight:500; color:var(--muted); transition:all .2s; }
+.sidebar-link:hover { background:var(--sage-light); color:var(--sage-dark); }
+.main-content { padding:2.5rem 3rem; }
+.admin-stats { display:grid; grid-template-columns:repeat(5,1fr); gap:1rem; margin-bottom:2.5rem; }
+.a-stat { background:white; border-radius:16px; padding:1.3rem; border:1px solid var(--border); transition:transform .2s; }
+.a-stat:hover { transform:translateY(-3px); }
+.a-stat .a-icon { font-size:1.4rem; margin-bottom:.5rem; display:block; }
+.a-stat .a-num { font-family:'Playfair Display',serif; font-size:1.9rem; font-weight:700; line-height:1; }
+.a-stat .a-label { font-size:.75rem; color:var(--muted); margin-top:.2rem; }
+.section-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem; }
+.section-head h2 { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; }
+.btn-sm { background:var(--sage-dark); color:white; border:none; padding:.5rem 1.2rem; border-radius:8px; font-size:.82rem; font-weight:700; font-family:'DM Sans',sans-serif; cursor:pointer; text-decoration:none; transition:background .2s; display:inline-block; }
+.btn-sm:hover { background:var(--sage); }
+.btn-danger-sm { background:#FDE8E8; color:#9B1C1C; border:none; padding:.4rem .9rem; border-radius:8px; font-size:.78rem; font-weight:700; font-family:'DM Sans',sans-serif; cursor:pointer; transition:background .2s; }
+.btn-danger-sm:hover { background:#f9c6c6; }
+.toggle-btn { border:none; padding:.35rem .8rem; border-radius:50px; font-size:.75rem; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
+.toggle-btn.available   { background:#EAF3DE; color:#3B6D11; }
+.toggle-btn.unavailable { background:#FDE8E8; color:#9B1C1C; }
+.status-select { padding:.3rem .6rem; border-radius:8px; border:1px solid var(--border); font-size:.8rem; font-family:'DM Sans',sans-serif; background:white; cursor:pointer; }
+.admin-role { background:var(--terracotta-light); color:var(--terracotta); padding:.2rem .6rem; border-radius:50px; font-size:.72rem; font-weight:700; }
+
+/* ════════════════════════════════════════════
+   PAYMENT PAGE
+════════════════════════════════════════════ */
+.pay-page { min-height:100vh; display:flex; flex-direction:column; }
+.pay-body { flex:1; display:flex; align-items:center; justify-content:center; padding:3rem 2rem; }
+.pay-container { background:white; border-radius:28px; padding:2.5rem; width:100%; max-width:480px; box-shadow:0 20px 60px rgba(44,44,42,.1); }
+.pay-header { text-align:center; margin-bottom:2rem; }
+.pay-icon { font-size:3rem; display:block; margin-bottom:.8rem; }
+.pay-title { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; margin-bottom:.4rem; }
+.pay-subtitle { color:var(--muted); font-size:.9rem; }
+.amount-badge { background:var(--sage-light); border-radius:16px; padding:1rem; text-align:center; margin-bottom:2rem; }
+.amount-num { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--sage-dark); }
+.amount-label { font-size:.8rem; color:var(--muted); margin-top:.2rem; }
+.upi-box { background:#F0F7FF; border-radius:16px; padding:1.5rem; text-align:center; margin-bottom:1.5rem; }
+.upi-qr { font-size:5rem; display:block; margin-bottom:.5rem; }
+.upi-id { font-weight:700; font-size:1.1rem; color:#1E429F; margin-bottom:.3rem; }
+.upi-note { font-size:.8rem; color:var(--muted); }
+.pay-section { display:none; }
+.btn-pay { width:100%; background:var(--sage-dark); color:white; border:none; padding:1rem; border-radius:14px; font-size:1rem; font-weight:700; font-family:'DM Sans',sans-serif; cursor:pointer; transition:background .2s; margin-top:.5rem; }
+.btn-pay:hover { background:var(--sage); }
+.secure-note { display:flex; align-items:center; justify-content:center; gap:.4rem; font-size:.78rem; color:var(--muted); margin-top:1rem; }
+.form-twin { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+
+/* ════════════════════════════════════════════
+   SUCCESS PAGE
+════════════════════════════════════════════ */
+.success-page { min-height:100vh; display:flex; flex-direction:column; }
+.success-body { flex:1; display:flex; align-items:center; justify-content:center; padding:3rem 2rem; }
+.success-card { background:white; border-radius:28px; padding:3rem 2.5rem; width:100%; max-width:520px; text-align:center; box-shadow:0 24px 64px rgba(44,44,42,.12); animation:popIn .5s cubic-bezier(.175,.885,.32,1.275) both; }
+@keyframes popIn { from{opacity:0;transform:scale(.88)} to{opacity:1;transform:scale(1)} }
+.success-icon { width:90px; height:90px; border-radius:50%; background:linear-gradient(135deg,#C8DEC9,#4A6B4E); display:flex; align-items:center; justify-content:center; font-size:2.8rem; margin:0 auto 1.5rem; }
+.success-title { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; margin-bottom:.5rem; color:var(--sage-dark); }
+.success-sub { color:var(--muted); font-size:.95rem; line-height:1.7; margin-bottom:2rem; }
+.appt-details { background:var(--cream); border-radius:16px; padding:1.5rem; text-align:left; margin-bottom:2rem; }
+.detail-row { display:flex; justify-content:space-between; align-items:center; padding:.5rem 0; border-bottom:1px solid var(--border); font-size:.9rem; }
+.detail-row:last-child { border-bottom:none; }
+.detail-key { color:var(--muted); font-weight:500; }
+.detail-val { font-weight:700; }
+.btn-group { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+.confetti { font-size:1.5rem; letter-spacing:.4rem; display:block; margin-bottom:1rem; }
+
+/* ════════════════════════════════════════════
+   DOCTOR FORM (Add/Edit)
+════════════════════════════════════════════ */
+.doctor-form-wrap { max-width:600px; margin:3rem auto; padding:0 2rem; }
+.form-card { background:white; border-radius:24px; padding:2.5rem; border:1px solid var(--border); box-shadow:0 8px 24px rgba(44,44,42,.06); }
+.form-card-title { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; margin-bottom:2rem; }
+.form-twin2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.btn-cancel-link { display:block; text-align:center; margin-top:1rem; color:var(--muted); font-size:.9rem; text-decoration:none; }
+.btn-cancel-link:hover { color:var(--charcoal); }
+
+/* ════════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════════ */
+@media (max-width:960px) {
+  .main-nav { padding:.9rem 1.5rem; }
+  .main-nav ul { display:none; }
+  .hero { grid-template-columns:1fr; padding:6rem 2rem 3rem; }
+  .hero-visual { display:none; }
+  .section, .vets-section, .booking-section, .testimonials-section { padding:4rem 2rem; }
+  .services-grid { grid-template-columns:1fr; }
+  .vets-grid { grid-template-columns:1fr 1fr; }
+  .booking-inner { grid-template-columns:1fr; gap:2rem; }
+  .testimonials-grid { grid-template-columns:1fr; }
+  .footer-grid { grid-template-columns:1fr 1fr; gap:2rem; }
+  .dash-wrap, .profile-wrap, .main-content { padding:1.5rem; }
+  .stats-grid, .admin-stats, .mini-doc-grid { grid-template-columns:1fr 1fr; }
+  .cards-grid2 { grid-template-columns:1fr; }
+  .admin-layout { grid-template-columns:1fr; }
+  .sidebar { display:none; }
+  .appt-card { grid-template-columns:auto 1fr; }
+  .appt-right { grid-column:1/-1; text-align:left; }
+}
+
+/* Animations */
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+.hero-text > * { animation:fadeUp .7s ease both; }
+.hero-badge { animation-delay:.1s; }
+.hero h1    { animation-delay:.2s; }
+.hero-sub   { animation-delay:.3s; }
+.hero-actions { animation-delay:.4s; }
+.hero-stats { animation-delay:.5s; }
 </style>
 </head>
 <body>
 
-<!-- NAVIGATION -->
-<nav>
-  <a href="#" class="logo">Paw<span>Care</span></a>
-  <ul>
-    <li><a href="#services">Services</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#vets">Our Vets</a></li>
-    <li><a href="#testimonials">Reviews</a></li>
-    <li><a href="#book" class="nav-cta">Book Consultation</a></li>
-  </ul>
+<!-- ════════════════════════════════════════════
+     FLASH MESSAGES (global)
+════════════════════════════════════════════ -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="flash-container" id="flash-wrap">
+  {% for category, message in messages %}
+  <div class="flash {{ category }}">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+
+<!-- ════════════════════════════════════════════
+     SHARED MAIN NAV (hidden on auth pages)
+════════════════════════════════════════════ -->
+{% if page not in ['login','signup','admin','add_doctor','edit_doctor','payment','success'] %}
+<nav class="main-nav">
+  <a href="/" class="logo">Paw<span>Care</span></a>
+  <div class="nav-links">
+    <a href="/#services">Services</a>
+    <a href="/#vets">Our Vets</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/appointments">My Appointments</a>
+    <a href="/profile">Profile</a>
+    {% if session.is_admin %}
+      <a href="/admin" class="nav-admin">Admin</a>
+    {% endif %}
+    <a href="/logout" class="nav-cta">Logout</a>
+  </div>
 </nav>
+{% endif %}
+
+
+<!-- ════════════════════════════════════════════
+     PAGE: LOGIN
+════════════════════════════════════════════ -->
+{% if page == 'login' %}
+<div class="auth-bg">
+  <div class="auth-card">
+    <a href="/login" class="auth-logo">Paw<span>Care</span></a>
+    <p class="auth-tagline">Your trusted pet care platform 🐾</p>
+
+    <form action="/login" method="POST">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" name="email" required placeholder="name@example.com" autofocus>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" required placeholder="••••••••">
+      </div>
+      <button type="submit" class="btn-submit">Login to PawCare →</button>
+    </form>
+
+    <div class="auth-switch">
+      New here? <a href="/signup">Create an account</a>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+<!-- ════════════════════════════════════════════
+     PAGE: SIGNUP
+════════════════════════════════════════════ -->
+{% if page == 'signup' %}
+<div class="auth-bg">
+  <div class="auth-card">
+    <a href="/login" class="auth-logo">Paw<span>Care</span></a>
+    <p class="auth-tagline">Create your free account today 🐾</p>
+
+    <form action="/signup" method="POST">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" name="name" required placeholder="Ayush Kumar" autofocus>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" name="email" required placeholder="name@example.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" required placeholder="Min. 6 characters">
+      </div>
+      <button type="submit" class="btn-submit">Create Account →</button>
+    </form>
+
+    <div class="auth-switch">
+      Already have an account? <a href="/login">Login</a>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+<!-- ════════════════════════════════════════════
+     PAGE: HOME (main site)
+════════════════════════════════════════════ -->
+{% if page == 'home' %}
+<div style="padding-top:64px;">
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-text">
     <div class="hero-badge">🐾 Trusted by 12,000+ pet families</div>
     <h1>Expert Care for Your <em>Beloved</em> Companions</h1>
-    <p class="hero-sub">Professional veterinary consultations, wellness checks, and personalized pet care — all from the comfort of home or at our warm clinics.</p>
+    <p class="hero-sub">Professional veterinary consultations, wellness checks, and personalized pet care — all at your fingertips.</p>
     <div class="hero-actions">
       <a href="#book" class="btn-primary">Book a Consultation →</a>
       <a href="#services" class="btn-secondary">Explore Services</a>
     </div>
     <div class="hero-stats">
-      <div class="stat-item">
-        <div class="stat-num">12K+</div>
-        <div class="stat-label">Happy Clients</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">98%</div>
-        <div class="stat-label">Satisfaction Rate</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">40+</div>
-        <div class="stat-label">Expert Vets</div>
-      </div>
+      <div><div class="stat-num">12K+</div><div class="stat-label">Happy Clients</div></div>
+      <div><div class="stat-num">98%</div><div class="stat-label">Satisfaction Rate</div></div>
+      <div><div class="stat-num">40+</div><div class="stat-label">Expert Vets</div></div>
     </div>
   </div>
-
   <div class="hero-visual">
     <div class="hero-card-main">
       <div class="hero-img-placeholder">🐶</div>
       <div class="hero-card-info">
         <div class="vet-info">
           <div class="vet-avatar">DR</div>
-          <div>
-            <div class="vet-name">Dr. Rachel Singh</div>
-            <div class="vet-title">Senior Veterinarian</div>
-          </div>
-          <div class="online-badge">
-            <div class="online-dot"></div>
-            Online Now
-          </div>
+          <div><div class="vet-name">Dr. Priya Sharma</div><div class="vet-title">Senior Veterinarian</div></div>
+          <div class="online-badge"><div class="online-dot"></div>Online Now</div>
         </div>
       </div>
     </div>
-    <div class="floating-tag tag-1">🏆 Top Rated 2025</div>
-    <div class="floating-tag tag-2">📅 Next slot: Today 3PM</div>
   </div>
 </section>
 
@@ -919,86 +602,14 @@
 <section class="section" id="services">
   <div class="section-label">What We Offer</div>
   <h2 class="section-title">Complete Care for Every Kind of Pet</h2>
-  <p class="section-sub">From routine check-ups to specialized consultations, our expert team is here for every stage of your pet's life.</p>
-
+  <p class="section-sub">From routine check-ups to specialized consultations, our expert team is here every step of the way.</p>
   <div class="services-grid">
-    <div class="service-card">
-      <div class="service-icon">🩺</div>
-      <h3>General Health Consultation</h3>
-      <p>Thorough examinations, preventive advice, and personalized health plans for cats, dogs, rabbits, and more.</p>
-      <a href="#book" class="service-link">Book now →</a>
-    </div>
-    <div class="service-card">
-      <div class="service-icon">💉</div>
-      <h3>Vaccinations & Preventive Care</h3>
-      <p>Stay up-to-date on all recommended vaccines and parasite prevention tailored to your pet's age and lifestyle.</p>
-      <a href="#book" class="service-link">Schedule →</a>
-    </div>
-    <div class="service-card">
-      <div class="service-icon">🥗</div>
-      <h3>Nutrition & Diet Planning</h3>
-      <p>Custom dietary plans developed by certified veterinary nutritionists to keep your pet healthy at every life stage.</p>
-      <a href="#book" class="service-link">Get a plan →</a>
-    </div>
-    <div class="service-card">
-      <div class="service-icon">🧠</div>
-      <h3>Behavioral Consultation</h3>
-      <p>Tackle anxiety, aggression, or training challenges with expert guidance from certified animal behaviorists.</p>
-      <a href="#book" class="service-link">Talk to us →</a>
-    </div>
-    <div class="service-card">
-      <div class="service-icon">🔬</div>
-      <h3>Diagnostics & Lab Tests</h3>
-      <p>In-clinic blood panels, urinalysis, X-rays, and specialized screenings to catch issues early.</p>
-      <a href="#book" class="service-link">Learn more →</a>
-    </div>
-    <div class="service-card">
-      <div class="service-icon">💻</div>
-      <h3>Online Video Consultations</h3>
-      <p>Connect with a vet from home via secure video call — ideal for follow-ups, minor concerns, and second opinions.</p>
-      <a href="#book" class="service-link">Start a call →</a>
-    </div>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section class="about-section" id="about">
-  <div class="about-grid">
-    <div class="about-visual">
-      <div class="about-img">🐱</div>
-      <div class="about-accent">
-        <div class="about-accent-num">15+</div>
-        <div class="about-accent-label">Years of experience</div>
-      </div>
-    </div>
-    <div>
-      <div class="section-label">About PawCare</div>
-      <h2 class="section-title">We Treat Every Pet Like Family</h2>
-      <p class="section-sub">Founded in 2009, PawCare was built on a simple belief — every animal deserves compassionate, evidence-based care. Our multidisciplinary team works together to provide the best outcomes for your companions.</p>
-      <ul class="feature-list">
-        <li>
-          <span class="check">✓</span>
-          <span>Board-certified veterinarians across 8 specialties, available 7 days a week</span>
-        </li>
-        <li>
-          <span class="check">✓</span>
-          <span>State-of-the-art in-clinic diagnostics including digital X-ray and ultrasound</span>
-        </li>
-        <li>
-          <span class="check">✓</span>
-          <span>Secure online portal to track medical records, reminders, and prescriptions</span>
-        </li>
-        <li>
-          <span class="check">✓</span>
-          <span>Multilingual support — Hindi, Marathi, English, and more</span>
-        </li>
-        <li>
-          <span class="check">✓</span>
-          <span>Home visit services available across Pune and surrounding areas</span>
-        </li>
-      </ul>
-      <a href="#book" class="btn-primary" style="margin-top:1.5rem; display:inline-block;">Meet Our Vets →</a>
-    </div>
+    <div class="service-card"><div class="service-icon">🩺</div><h3>General Health Consultation</h3><p>Thorough examinations, preventive advice, and personalized health plans for all pets.</p><a href="#book" class="service-link">Book now →</a></div>
+    <div class="service-card"><div class="service-icon">💉</div><h3>Vaccinations & Preventive Care</h3><p>Stay up-to-date on all recommended vaccines and parasite prevention.</p><a href="#book" class="service-link">Schedule →</a></div>
+    <div class="service-card"><div class="service-icon">🥗</div><h3>Nutrition & Diet Planning</h3><p>Custom dietary plans by certified veterinary nutritionists.</p><a href="#book" class="service-link">Get a plan →</a></div>
+    <div class="service-card"><div class="service-icon">🧠</div><h3>Behavioral Consultation</h3><p>Tackle anxiety, aggression, or training challenges with expert guidance.</p><a href="#book" class="service-link">Talk to us →</a></div>
+    <div class="service-card"><div class="service-icon">🔬</div><h3>Diagnostics & Lab Tests</h3><p>In-clinic blood panels, urinalysis, X-rays, and specialized screenings.</p><a href="#book" class="service-link">Learn more →</a></div>
+    <div class="service-card"><div class="service-icon">💻</div><h3>Online Video Consultations</h3><p>Connect with a vet from home via secure video call.</p><a href="#book" class="service-link">Start a call →</a></div>
   </div>
 </section>
 
@@ -1007,57 +618,40 @@
   <div style="text-align:center;">
     <div class="section-label">Our Team</div>
     <h2 class="section-title" style="max-width:100%;text-align:center;">Meet Our Veterinary Experts</h2>
-    <p class="section-sub" style="margin:0 auto;text-align:center;">Passionate, experienced, and genuinely caring — our vets are here for you and your pets.</p>
+    <p class="section-sub" style="margin:0 auto;text-align:center;">Passionate, experienced — our vets are here for you and your pets.</p>
   </div>
-  <div class="vets-grid">
+
+  <div class="filter-pills">
+    <button class="filter-pill active" data-spec-filter="All">All</button>
+    <button class="filter-pill" data-spec-filter="Small Animals">Small Animals</button>
+    <button class="filter-pill" data-spec-filter="Feline">Feline</button>
+    <button class="filter-pill" data-spec-filter="Exotic">Exotic & Avian</button>
+    <button class="filter-pill" data-spec-filter="Nutrition">Nutrition</button>
+    <button class="filter-pill" data-spec-filter="General">General</button>
+  </div>
+
+  <div class="vets-grid" id="doctors-grid">
+    {% for doc in doctors %}
     <div class="vet-card">
-      <div class="vet-img" style="background:#C8DEC9;">🐕</div>
+      <div class="vet-img" style="background:{{ doc.bg_color }};">{{ doc.emoji }}</div>
       <div class="vet-body">
-        <div class="vet-card-name">Dr. Priya Sharma</div>
-        <div class="vet-card-spec">Small Animals & Surgery</div>
-        <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">12 years experience · BVSc, MVSc IVRI</div>
+        <div class="vet-card-name">{{ doc.name }}</div>
+        <div class="vet-card-spec">{{ doc.specialization }}</div>
+        <div style="font-size:.8rem;color:var(--muted);line-height:1.6;margin-bottom:.4rem;">{{ doc.experience }} · {{ doc.qualification }}</div>
         <div class="vet-card-footer">
-          <span class="stars">★★★★★</span>
-          <a class="book-link" href="#book">Book →</a>
+          {% if doc.status == 'available' %}
+            <span class="avail-badge avail-available">🟢 Available</span>
+            <button class="book-now-btn" data-doctor-id="{{ doc.id }}" data-doctor-name="{{ doc.name }}">Book →</button>
+          {% else %}
+            <span class="avail-badge avail-unavailable">🔴 Unavailable</span>
+            <span style="font-size:.78rem;color:var(--muted);">—</span>
+          {% endif %}
         </div>
       </div>
     </div>
-    <div class="vet-card">
-      <div class="vet-img" style="background:#F2D5BC;">🐈</div>
-      <div class="vet-body">
-        <div class="vet-card-name">Dr. Arjun Mehta</div>
-        <div class="vet-card-spec">Feline Medicine</div>
-        <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">9 years experience · BVSc, Cert. Feline Med.</div>
-        <div class="vet-card-footer">
-          <span class="stars">★★★★★</span>
-          <a class="book-link" href="#book">Book →</a>
-        </div>
-      </div>
-    </div>
-    <div class="vet-card">
-      <div class="vet-img" style="background:#EAF3DE;">🐦</div>
-      <div class="vet-body">
-        <div class="vet-card-name">Dr. Kavita Nair</div>
-        <div class="vet-card-spec">Exotic Pets & Avian</div>
-        <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">7 years experience · BVSc, Dip. ECZM</div>
-        <div class="vet-card-footer">
-          <span class="stars">★★★★★</span>
-          <a class="book-link" href="#book">Book →</a>
-        </div>
-      </div>
-    </div>
-    <div class="vet-card">
-      <div class="vet-img" style="background:#EEEDFE;">🐇</div>
-      <div class="vet-body">
-        <div class="vet-card-name">Dr. Rohan Desai</div>
-        <div class="vet-card-spec">Nutrition & Dermatology</div>
-        <div style="font-size:0.8rem;color:var(--muted);line-height:1.6;">10 years experience · BVSc, PhD Nutrition</div>
-        <div class="vet-card-footer">
-          <span class="stars">★★★★★</span>
-          <a class="book-link" href="#book">Book →</a>
-        </div>
-      </div>
-    </div>
+    {% else %}
+    <p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:2rem;">No doctors available.</p>
+    {% endfor %}
   </div>
 </section>
 
@@ -1066,75 +660,61 @@
   <div class="booking-inner">
     <div class="booking-text">
       <h2>Ready to Give Your Pet the Best Care?</h2>
-      <p>Book a consultation in under 2 minutes. Choose between clinic visits, home appointments, or online video calls — whatever works for you.</p>
+      <p>Book a consultation in under 2 minutes.</p>
       <div style="display:flex;flex-direction:column;gap:1rem;">
-        <div style="display:flex;align-items:center;gap:0.8rem;font-size:0.9rem;opacity:0.8;">
-          <span style="font-size:1.1rem;">📅</span> Same-day and next-day slots available
-        </div>
-        <div style="display:flex;align-items:center;gap:0.8rem;font-size:0.9rem;opacity:0.8;">
-          <span style="font-size:1.1rem;">🔒</span> Secure & confidential health records
-        </div>
-        <div style="display:flex;align-items:center;gap:0.8rem;font-size:0.9rem;opacity:0.8;">
-          <span style="font-size:1.1rem;">💬</span> Free follow-up message within 24 hrs
-        </div>
-        <div style="display:flex;align-items:center;gap:0.8rem;font-size:0.9rem;opacity:0.8;">
-          <span style="font-size:1.1rem;">🐾</span> All species welcome — dogs, cats, birds, rabbits, reptiles
-        </div>
+        <div style="display:flex;align-items:center;gap:.8rem;font-size:.9rem;opacity:.8;"><span>📅</span> Same-day and next-day slots available</div>
+        <div style="display:flex;align-items:center;gap:.8rem;font-size:.9rem;opacity:.8;"><span>🔒</span> Secure &amp; confidential health records</div>
+        <div style="display:flex;align-items:center;gap:.8rem;font-size:.9rem;opacity:.8;"><span>🐾</span> All species welcome</div>
       </div>
     </div>
 
-    <div class="booking-form">
+    <form class="booking-form" action="/book" method="POST">
       <div class="form-title">Book Your Appointment</div>
       <div class="form-row">
-        <div class="form-group">
-          <label>Your Name</label>
-          <input type="text" placeholder="Ananya Kulkarni">
-        </div>
-        <div class="form-group">
-          <label>Phone Number</label>
-          <input type="tel" placeholder="+91 98765 43210">
-        </div>
+        <div class="form-group"><label>Your Name</label><input type="text" name="owner_name" required placeholder="Ananya Kulkarni"></div>
+        <div class="form-group"><label>Phone</label><input type="tel" name="phone" required placeholder="+91 98765 43210"></div>
       </div>
       <div class="form-row">
-        <div class="form-group">
-          <label>Pet's Name</label>
-          <input type="text" placeholder="Bruno">
-        </div>
-        <div class="form-group">
-          <label>Pet Type</label>
-          <select>
-            <option>Dog</option>
-            <option>Cat</option>
-            <option>Bird</option>
-            <option>Rabbit</option>
-            <option>Reptile</option>
-            <option>Other</option>
+        <div class="form-group"><label>Pet's Name</label><input type="text" name="pet_name" required placeholder="Bruno"></div>
+        <div class="form-group"><label>Pet Type</label>
+          <select name="pet_type" required>
+            <option>Dog</option><option>Cat</option><option>Bird</option>
+            <option>Rabbit</option><option>Reptile</option><option>Other</option>
           </select>
         </div>
       </div>
       <div class="form-row">
-        <div class="form-group">
-          <label>Service Needed</label>
-          <select>
-            <option>General Health Check</option>
-            <option>Vaccination</option>
-            <option>Nutrition Plan</option>
-            <option>Behavioral Consultation</option>
-            <option>Diagnostics</option>
-            <option>Online Consultation</option>
+        <div class="form-group"><label>Service</label>
+          <select name="service" required>
+            <option>General Health Check</option><option>Vaccination</option>
+            <option>Nutrition Plan</option><option>Behavioral Consultation</option>
+            <option>Diagnostics</option><option>Online Consultation</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>Preferred Date</label>
-          <input type="date">
-        </div>
+        <div class="form-group"><label>Preferred Date</label><input type="date" name="pref_date" required></div>
       </div>
       <div class="form-group">
-        <label>Brief Description (optional)</label>
-        <textarea placeholder="Describe your pet's symptoms or concerns..."></textarea>
+        <label>Select Doctor (optional)</label>
+        <select id="doctor_id" name="doctor_id">
+          <option value="">Any Available Doctor</option>
+          {% for doc in doctors %}
+            {% if doc.status == 'available' %}
+            <option value="{{ doc.id }}">{{ doc.name }} — {{ doc.specialization }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
       </div>
-      <button class="form-submit" onclick="this.textContent='✓ Appointment Request Sent!'; this.style.background='#3B6D11'; setTimeout(()=>{this.textContent='Confirm Appointment →'; this.style.background='';}, 3000);">Confirm Appointment →</button>
-    </div>
+      <div class="form-group"><label>Payment Method</label>
+        <select name="payment_method" required>
+          <option value="clinic">Pay at Clinic</option>
+          <option value="upi">UPI (GPay, PhonePe, Paytm)</option>
+          <option value="card">Credit / Debit Card</option>
+          <option value="netbanking">Net Banking</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Description (optional)</label><textarea name="description" placeholder="Describe your pet's symptoms..."></textarea></div>
+      <button type="submit" class="form-submit">Proceed to Book →</button>
+    </form>
   </div>
 </section>
 
@@ -1144,41 +724,10 @@
     <div class="section-label">What Our Clients Say</div>
     <h2 class="section-title" style="max-width:100%;text-align:center;">Loved by Pet Parents</h2>
   </div>
-
   <div class="testimonials-grid">
-    <div class="testimonial-card">
-      <div class="quote-mark">"</div>
-      <p class="testimonial-text">PawCare genuinely changed how I approach my dog's health. The online consultation was seamless, Dr. Priya was incredibly thorough, and the follow-up care plan was spot on.</p>
-      <div class="testimonial-author">
-        <div class="author-avatar" style="background:#C8DEC9;color:#4A6B4E;">SM</div>
-        <div>
-          <div class="author-name">Sneha Malhotra</div>
-          <div class="author-pet">Mom to Coco (Labrador)</div>
-        </div>
-      </div>
-    </div>
-    <div class="testimonial-card">
-      <div class="quote-mark">"</div>
-      <p class="testimonial-text">I was worried about my cat's sudden weight loss. Dr. Arjun ran all the necessary tests and had a full report ready within hours. Professional, compassionate, and efficient.</p>
-      <div class="testimonial-author">
-        <div class="author-avatar" style="background:#F2D5BC;color:#C97B4B;">RK</div>
-        <div>
-          <div class="author-name">Rahul Kulkarni</div>
-          <div class="author-pet">Dad to Mango (Persian Cat)</div>
-        </div>
-      </div>
-    </div>
-    <div class="testimonial-card">
-      <div class="quote-mark">"</div>
-      <p class="testimonial-text">As someone who owns two parrots, finding a vet who truly understands avian health was hard — until PawCare. Dr. Kavita is extraordinary. Highly recommend to any exotic pet owner.</p>
-      <div class="testimonial-author">
-        <div class="author-avatar" style="background:#EAF3DE;color:#3B6D11;">DP</div>
-        <div>
-          <div class="author-name">Divya Patel</div>
-          <div class="author-pet">Owner of Rio & Luna (Parrots)</div>
-        </div>
-      </div>
-    </div>
+    <div class="testimonial-card"><div class="quote-mark">"</div><p class="testimonial-text">PawCare genuinely changed how I approach my dog's health. Dr. Priya was incredibly thorough.</p><div class="testimonial-author"><div class="author-avatar" style="background:#C8DEC9;color:#4A6B4E;">SM</div><div><div class="author-name">Sneha Malhotra</div><div class="author-pet">Mom to Coco (Labrador)</div></div></div></div>
+    <div class="testimonial-card"><div class="quote-mark">"</div><p class="testimonial-text">Dr. Arjun ran all tests and had a full report ready within hours. Professional and efficient.</p><div class="testimonial-author"><div class="author-avatar" style="background:#F2D5BC;color:#C97B4B;">RK</div><div><div class="author-name">Rahul Kulkarni</div><div class="author-pet">Dad to Mango (Persian Cat)</div></div></div></div>
+    <div class="testimonial-card"><div class="quote-mark">"</div><p class="testimonial-text">Finding a vet who understands avian health was hard — until PawCare. Dr. Kavita is extraordinary.</p><div class="testimonial-author"><div class="author-avatar" style="background:#EAF3DE;color:#3B6D11;">DP</div><div><div class="author-name">Divya Patel</div><div class="author-pet">Owner of Rio & Luna (Parrots)</div></div></div></div>
   </div>
 </section>
 
@@ -1187,49 +736,608 @@
   <div class="footer-grid">
     <div>
       <div class="footer-logo">Paw<span>Care</span></div>
-      <p class="footer-desc">Compassionate, expert pet care for every companion. Serving Pune and surrounding areas since 2009.</p>
+      <p class="footer-desc">Compassionate, expert pet care. Serving Pune and surrounding areas since 2009.</p>
       <div class="footer-socials">
-        <a class="social-btn" href="#">f</a>
-        <a class="social-btn" href="#">in</a>
-        <a class="social-btn" href="#">tw</a>
-        <a class="social-btn" href="#">yt</a>
+        <a class="social-btn" href="#">f</a><a class="social-btn" href="#">in</a>
+        <a class="social-btn" href="#">tw</a><a class="social-btn" href="#">yt</a>
       </div>
     </div>
-    <div class="footer-col">
-      <h4>Services</h4>
-      <ul>
-        <li><a href="#">Health Consultation</a></li>
-        <li><a href="#">Vaccinations</a></li>
-        <li><a href="#">Nutrition Planning</a></li>
-        <li><a href="#">Behavioral Help</a></li>
-        <li><a href="#">Online Consult</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Company</h4>
-      <ul>
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Our Vets</a></li>
-        <li><a href="#">Blog & Tips</a></li>
-        <li><a href="#">Careers</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Contact</h4>
-      <ul>
-        <li><a href="#">📍 Koregaon Park, Pune</a></li>
-        <li><a href="#">📞 +91 98765 00000</a></li>
-        <li><a href="#">✉️ hello@pawcare.in</a></li>
-        <li><a href="#">⏰ Mon–Sun: 8AM–9PM</a></li>
-      </ul>
-    </div>
+    <div class="footer-col"><h4>Services</h4><ul><li><a href="#">Health Consultation</a></li><li><a href="#">Vaccinations</a></li><li><a href="#">Nutrition Planning</a></li><li><a href="#">Online Consult</a></li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li><a href="#">About Us</a></li><li><a href="#">Our Vets</a></li><li><a href="#">Careers</a></li><li><a href="#">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul><li><a href="#">📍 Koregaon Park, Pune</a></li><li><a href="#">📞 +91 98765 00000</a></li><li><a href="#">✉️ hello@pawcare.in</a></li><li><a href="#">⏰ Mon–Sun 8AM–9PM</a></li></ul></div>
   </div>
   <div class="footer-bottom">
     <p>© 2025 PawCare. All rights reserved.</p>
     <p>Privacy Policy · Terms of Service</p>
   </div>
 </footer>
+
+</div><!-- end home wrapper -->
+{% endif %}
+
+
+<!-- ════════════════════════════════════════════
+     PAGE: DASHBOARD
+════════════════════════════════════════════ -->
+{% if page == 'dashboard' %}
+<div style="padding-top:64px;">
+<div class="dash-wrap">
+
+  <div class="page-heading">
+    <h1>Welcome back, <span>{{ session.user_name }}</span> 🐾</h1>
+    <p>Here's an overview of your pet care activity.</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-icon-box" style="background:#EAF3DE;">📅</div><div><div class="s-num">{{ total }}</div><div class="s-label">Total Bookings</div></div></div>
+    <div class="stat-card"><div class="stat-icon-box" style="background:#FEF3C7;">⏳</div><div><div class="s-num">{{ pending }}</div><div class="s-label">Pending</div></div></div>
+    <div class="stat-card"><div class="stat-icon-box" style="background:#DBEAFE;">✅</div><div><div class="s-num">{{ confirmed }}</div><div class="s-label">Confirmed</div></div></div>
+    <div class="stat-card"><div class="stat-icon-box" style="background:#D1FAE5;">🏆</div><div><div class="s-num">{{ completed }}</div><div class="s-label">Completed</div></div></div>
+  </div>
+
+  <div class="quick-book">
+    <div><h3>Need a vet visit? Book in 2 minutes</h3><p>Select a doctor below or go to the booking form directly.</p></div>
+    <a href="/#book" class="btn-white">Book Appointment →</a>
+  </div>
+
+  <div class="section-row"><h2>Available Veterinarians</h2><a href="/#vets" class="see-all">See all →</a></div>
+  {% if doctors %}
+  <div class="mini-doc-grid">
+    {% for doc in doctors %}
+    <div class="mini-doc-card">
+      <div class="mini-doc-img" style="background:{{ doc.bg_color }};">{{ doc.emoji }}</div>
+      <div class="mini-doc-body">
+        <div class="mini-doc-name">{{ doc.name }}</div>
+        <div class="mini-doc-spec">{{ doc.specialization }}</div>
+        <div class="mini-doc-footer">
+          <span class="avail-badge avail-available" style="font-size:.7rem;">🟢 Available</span>
+          <a href="/#book" class="book-link">Book →</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state"><span class="empty-icon">🩺</span><p>No doctors available now.</p></div>
+  {% endif %}
+
+  <div class="section-row"><h2>Recent Appointments</h2><a href="/appointments" class="see-all">View all →</a></div>
+  {% if recent %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Pet</th><th>Service</th><th>Doctor</th><th>Date</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for a in recent %}
+        <tr>
+          <td style="color:var(--muted);">#{{ a.id }}</td>
+          <td><strong>{{ a.pet_name }}</strong> ({{ a.pet_type }})</td>
+          <td>{{ a.service }}</td>
+          <td>{{ a.doctor_name or '—' }}</td>
+          <td>{{ a.pref_date }}</td>
+          <td><span class="status-badge">{{ a.status }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state table-wrap">
+    <span class="empty-icon">🐾</span>
+    <p>No appointments yet. <a href="/#book" style="color:var(--sage-dark);font-weight:700;">Book your first one!</a></p>
+  </div>
+  {% endif %}
+
+</div>
+</div>
+{% endif %}
+
+
+<!-- ════════════════════════════════════════════
+     PAGE: APPOINTMENTS
+════════════════════════════════════════════ -->
+{% if page == 'appointments' %}
+<div style="padding-top:64px;">
+<div class="dash-wrap">
+  <div class="page-heading" style="display:flex;justify-content:space-between;align-items:center;">
+    <div><h1>📋 My Appointments</h1></div>
+    <a href="/#book" class="btn-primary" style="white-space:nowrap;">+ Book New</a>
+  </div>
+
+  {% if appts %}
+  <div class="appt-list">
+    {% set pet_emojis = {'Dog':'🐕','Cat':'🐈','Bird':'🐦','Rabbit':'🐇','Reptile':'🦎'} %}
+    {% set pet_colors = {'Dog':'#C8DEC9','Cat':'#F2D5BC','Bird':'#EAF3DE','Rabbit':'#EEEDFE','Reptile':'#FDE8E8'} %}
+    {% for a in appts %}
+    <div class="appt-card">
+      <div class="appt-icon" style="background:{{ pet_colors.get(a.pet_type,'#F2D5BC') }}">{{ pet_emojis.get(a.pet_type,'🐾') }}</div>
+      <div>
+        <div class="appt-pet">{{ a.pet_name }} <span style="font-weight:400;color:var(--muted);">({{ a.pet_type }})</span></div>
+        <div class="appt-service">{{ a.service }}</div>
+        <div class="appt-meta">
+          <span>📅 {{ a.pref_date }}</span>
+          <span>🩺 {{ a.doctor_name or 'Any Vet' }}</span>
+          <span>💳 {{ a.payment_method|capitalize }}</span>
+        </div>
+      </div>
+      <div class="appt-right">
+        <span class="status-badge">{{ a.status }}</span><br>
+        {% if a.payment_status %}<span style="font-size:.75rem;color:var(--muted);">Payment: <strong>{{ a.payment_status }}</strong></span>{% endif %}
+        <div style="font-size:.72rem;color:var(--muted);margin-top:.3rem;">#{{ a.id }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state" style="background:white;border-radius:20px;border:1px solid var(--border);">
+    <span class="empty-icon">🐾</span>
+    <p style="margin-bottom:1.5rem;">No appointments yet.</p>
+    <a href="/#book" class="btn-primary">Book Your First Appointment</a>
+  </div>
+  {% endif %}
+</div>
+</div>
+{% endif %}
+
+
+<!-- ════════════════════════════════════════════
+     PAGE: PROFILE
+════════════════════════════════════════════ -->
+{% if page == 'profile' %}
+<div style="padding-top:64px;">
+<div class="profile-wrap">
+
+  <div class="profile-header">
+    <div class="avatar">{{ user.name[0].upper() }}</div>
+    <div>
+      <div class="profile-title-name">{{ user.name }}</div>
+      <div class="profile-email">{{ user.email }}</div>
+      <div style="font-size:.8rem;color:var(--muted);margin-top:.4rem;">Member since {{ user.created_at[:10] if user.created_at else 'N/A' }}</div>
+      <div class="stat-chips">
+        <span class="stat-chip">📅 {{ total }} Appointment{{ 's' if total != 1 else '' }}</span>
+        {% if user.city  %}<span class="stat-chip">📍 {{ user.city }}</span>{% endif %}
+        {% if user.phone %}<span class="stat-chip">📞 {{ user.phone }}</span>{% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="cards-grid2">
+    <div class="profile-card">
+      <div class="card-title">👤 Edit Profile</div>
+      <form method="POST" action="/profile">
+        <input type="hidden" name="action" value="update_profile">
+        <div class="form-group"><label>Full Name</label><input type="text" name="name" value="{{ user.name }}" required></div>
+        <div class="form-group"><label>Email</label><input type="email" value="{{ user.email }}" readonly></div>
+        <div class="form-group"><label>Phone</label><input type="tel" name="phone" value="{{ user.phone or '' }}" placeholder="+91 98765 43210"></div>
+        <div class="form-group"><label>City</label><input type="text" name="city" value="{{ user.city or '' }}" placeholder="Pune"></div>
+        <button type="submit" class="btn-save">Save Changes</button>
+      </form>
+    </div>
+    <div class="profile-card">
+      <div class="card-title">🔐 Change Password</div>
+      <form method="POST" action="/profile">
+        <input type="hidden" name="action" value="change_password">
+        <div class="form-group"><label>Current Password</label><input type="password" name="old_password" required placeholder="••••••••"></div>
+        <div class="form-group"><label>New Password</label><input type="password" name="new_password" required placeholder="Min. 6 characters"></div>
+        <div class="form-group">
+          <label>Quick Links</label>
+          <div class="quick-links">
+            <a href="/appointments">📋 View All Appointments →</a>
+            <a href="/#book">📅 Book New Appointment →</a>
+            <a href="/dashboard">🏠 Go to Dashboard →</a>
+          </div>
+        </div>
+        <button type="submit" class="btn-save">Change Password</button>
+      </form>
+    </div>
+  </div>
+
+</div>
+</div>
+{% endif %}
+
+
+<!-- ════════════════════════════════════════════
+     PAGE: ADMIN
+════════════════════════════════════════════ -->
+{% if page == 'admin' %}
+<nav class="admin-nav">
+  <a href="/" class="logo">Paw<span>Care</span></a>
+  <div style="display:flex;gap:1.5rem;align-items:center;">
+    <span style="color:rgba(255,255,255,.4);font-size:.8rem;">Admin Panel</span>
+    <a href="/">← Home</a>
+    <a href="/logout" class="logout-pill">Logout</a>
+  </div>
+</nav>
+
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="sidebar-title">Navigation</div>
+    <div class="sidebar-links">
+      <a href="#a-overview"     class="sidebar-link">📊 Overview</a>
+      <a href="#a-appointments" class="sidebar-link">📅 Appointments</a>
+      <a href="#a-doctors"      class="sidebar-link">🩺 Doctors</a>
+      <a href="#a-users"        class="sidebar-link">👥 Users</a>
+    </div>
+    <div class="sidebar-title">Quick Actions</div>
+    <div class="sidebar-links">
+      <a href="/add_doctor" class="sidebar-link">➕ Add Doctor</a>
+      <a href="/" class="sidebar-link">🌐 View Site</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <!-- STATS -->
+    <div id="a-overview">
+      <div class="section-head" style="margin-bottom:1.5rem;">
+        <span style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;">📊 Overview</span>
+        <span style="font-size:.8rem;color:var(--muted);">Hello, Admin 👋</span>
+      </div>
+      <div class="admin-stats">
+        <div class="a-stat"><span class="a-icon">👥</span><div class="a-num">{{ total_users }}</div><div class="a-label">Registered Users</div></div>
+        <div class="a-stat"><span class="a-icon">📅</span><div class="a-num">{{ total_appts }}</div><div class="a-label">Total Appointments</div></div>
+        <div class="a-stat"><span class="a-icon">⏳</span><div class="a-num">{{ pending_appts }}</div><div class="a-label">Pending</div></div>
+        <div class="a-stat"><span class="a-icon">🩺</span><div class="a-num">{{ total_doctors }}</div><div class="a-label">Doctors</div></div>
+        <div class="a-stat"><span class="a-icon">💳</span><div class="a-num">{{ total_paid }}</div><div class="a-label">Payments Paid</div></div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div id="a-appointments">
+      <div class="section-head"><h2>📅 Recent Appointments</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Owner / Pet</th><th>Service</th><th>Doctor</th><th>Date</th><th>Payment</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            {% for a in appointments %}
+            <tr>
+              <td style="color:var(--muted);">#{{ a.id }}</td>
+              <td><strong>{{ a.owner_name }}</strong><br><span style="font-size:.8rem;color:var(--muted);">{{ a.pet_name }} ({{ a.pet_type }})</span></td>
+              <td>{{ a.service }}</td>
+              <td>{{ a.doctor_name or '—' }}</td>
+              <td>{{ a.pref_date }}</td>
+              <td><span class="status-badge">{{ a.payment_status or 'Pending' }}</span></td>
+              <td><span class="status-badge">{{ a.status }}</span></td>
+              <td>
+                <form method="POST" action="/update_appointment_status/{{ a.id }}" style="display:flex;gap:.4rem;align-items:center;">
+                  <select name="status" class="status-select">
+                    <option {% if a.status=='Pending'   %}selected{% endif %}>Pending</option>
+                    <option {% if a.status=='Confirmed' %}selected{% endif %}>Confirmed</option>
+                    <option {% if a.status=='Completed' %}selected{% endif %}>Completed</option>
+                    <option {% if a.status=='Cancelled' %}selected{% endif %}>Cancelled</option>
+                  </select>
+                  <button type="submit" class="btn-sm" style="padding:.3rem .7rem;font-size:.75rem;">✓</button>
+                </form>
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" style="text-align:center;color:var(--muted);padding:2rem;">No appointments yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DOCTORS -->
+    <div id="a-doctors">
+      <div class="section-head"><h2>🩺 Doctors</h2><a href="/add_doctor" class="btn-sm">+ Add Doctor</a></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Name</th><th>Specialization</th><th>Experience</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            {% for d in doctors %}
+            <tr>
+              <td>{{ d.emoji }}</td>
+              <td><strong>{{ d.name }}</strong></td>
+              <td>{{ d.specialization }}</td>
+              <td>{{ d.experience }}</td>
+              <td>⭐ {{ d.rating }}</td>
+              <td>
+                <form method="POST" action="/toggle_doctor/{{ d.id }}" style="display:inline;">
+                  <button type="submit" class="toggle-btn {{ d.status }}">{% if d.status=='available' %}🟢 Available{% else %}🔴 Unavailable{% endif %}</button>
+                </form>
+              </td>
+              <td style="display:flex;gap:.5rem;">
+                <a href="/edit_doctor/{{ d.id }}" class="btn-sm">Edit</a>
+                <form method="POST" action="/delete_doctor/{{ d.id }}" style="display:inline;">
+                  <button type="submit" class="btn-danger-sm" data-confirm="Delete {{ d.name }}?">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem;">No doctors.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div id="a-users">
+      <div class="section-head"><h2>👥 Registered Users</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Role</th><th>Joined</th></tr></thead>
+          <tbody>
+            {% for u in users %}
+            <tr>
+              <td style="color:var(--muted);">#{{ u.id }}</td>
+              <td><strong>{{ u.name }}</strong></td>
+              <td>{{ u.email }}</td>
+              <td>{{ u.phone or '—' }}</td>
+              <td>{{ u.city  or '—' }}</td>
+              <td>{% if u.is_admin %}<span class="admin-role">Admin</span>{% else %}<span style="font-size:.82rem;color:var(--muted)">User</span>{% endif %}</td>
+              <td style="font-size:.82rem;color:var(--muted);">{{ u.created_at[:10] if u.created_at else '—' }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:2rem;">No users.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endif %}
+
+
+<!-- ════════════════════════════════════════════
+     PAGE: ADD DOCTOR
+════════════════════════════════════════════ -->
+{% if page == 'add_doctor' %}
+<nav class="admin-nav">
+  <a href="/" class="logo">Paw<span>Care</span></a>
+  <a href="/admin" style="color:rgba(255,255,255,.6);text-decoration:none;font-size:.9rem;">← Back to Admin</a>
+</nav>
+<div class="doctor-form-wrap" style="padding-top:2rem;">
+  <div class="form-card">
+    <div class="form-card-title">➕ Add New Doctor</div>
+    <form method="POST" action="/add_doctor">
+      <div class="form-group"><label>Full Name *</label><input type="text" name="name" required placeholder="Dr. Priya Sharma"></div>
+      <div class="form-group"><label>Specialization *</label><input type="text" name="specialization" required placeholder="Small Animals & Surgery"></div>
+      <div class="form-twin2">
+        <div class="form-group"><label>Experience</label><input type="text" name="experience" placeholder="12 years"></div>
+        <div class="form-group"><label>Qualification</label><input type="text" name="qualification" placeholder="BVSc, MVSc"></div>
+      </div>
+      <div class="form-twin2">
+        <div class="form-group"><label>Status</label>
+          <select name="status"><option value="available">🟢 Available</option><option value="unavailable">🔴 Unavailable</option></select>
+        </div>
+        <div class="form-group"><label>Emoji Icon</label><input type="text" name="emoji" value="🩺"></div>
+      </div>
+      <div class="form-twin2">
+        <div class="form-group"><label>Rating (0–5)</label><input type="number" name="rating" value="5.0" min="0" max="5" step="0.1"></div>
+        <div class="form-group"><label>Card Color</label><input type="color" name="bg_color" value="#C8DEC9" style="height:2.8rem;padding:.2rem;"></div>
+      </div>
+      <button type="submit" class="btn-submit">Add Doctor</button>
+      <a href="/admin" class="btn-cancel-link">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+
+<!-- ════════════════════════════════════════════
+     PAGE: EDIT DOCTOR
+════════════════════════════════════════════ -->
+{% if page == 'edit_doctor' %}
+<nav class="admin-nav">
+  <a href="/" class="logo">Paw<span>Care</span></a>
+  <a href="/admin" style="color:rgba(255,255,255,.6);text-decoration:none;font-size:.9rem;">← Back to Admin</a>
+</nav>
+<div class="doctor-form-wrap" style="padding-top:2rem;">
+  <div class="form-card">
+    <div class="form-card-title">✏️ Edit Doctor</div>
+    <form method="POST" action="/edit_doctor/{{ doctor.id }}">
+      <div class="form-group"><label>Full Name *</label><input type="text" name="name" required value="{{ doctor.name }}"></div>
+      <div class="form-group"><label>Specialization *</label><input type="text" name="specialization" required value="{{ doctor.specialization }}"></div>
+      <div class="form-twin2">
+        <div class="form-group"><label>Experience</label><input type="text" name="experience" value="{{ doctor.experience }}"></div>
+        <div class="form-group"><label>Qualification</label><input type="text" name="qualification" value="{{ doctor.qualification }}"></div>
+      </div>
+      <div class="form-twin2">
+        <div class="form-group"><label>Status</label>
+          <select name="status">
+            <option value="available"   {% if doctor.status=='available'   %}selected{% endif %}>🟢 Available</option>
+            <option value="unavailable" {% if doctor.status=='unavailable' %}selected{% endif %}>🔴 Unavailable</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Emoji Icon</label><input type="text" name="emoji" value="{{ doctor.emoji }}"></div>
+      </div>
+      <div class="form-twin2">
+        <div class="form-group"><label>Rating (0–5)</label><input type="number" name="rating" value="{{ doctor.rating }}" min="0" max="5" step="0.1"></div>
+        <div class="form-group"><label>Card Color</label><input type="color" name="bg_color" value="{{ doctor.bg_color }}" style="height:2.8rem;padding:.2rem;"></div>
+      </div>
+      <button type="submit" class="btn-submit">Save Changes</button>
+      <a href="/admin" class="btn-cancel-link">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+
+<!-- ════════════════════════════════════════════
+     PAGE: PAYMENT
+════════════════════════════════════════════ -->
+{% if page == 'payment' %}
+<div class="pay-page">
+  <nav style="display:flex;justify-content:space-between;align-items:center;padding:1rem 3rem;background:white;border-bottom:1px solid var(--border);">
+    <a href="/" class="logo">Paw<span>Care</span></a>
+    <span style="font-size:.85rem;color:var(--muted);">Secure Checkout 🔒</span>
+  </nav>
+  <div class="pay-body">
+    <div class="pay-container">
+      <div class="pay-header">
+        <span class="pay-icon">{% if method=='upi' %}📱{% elif method=='card' %}💳{% elif method=='netbanking' %}🏦{% else %}✅{% endif %}</span>
+        <div class="pay-title">{% if method=='upi' %}UPI Payment{% elif method=='card' %}Card Payment{% elif method=='netbanking' %}Net Banking{% else %}Confirm Booking{% endif %}</div>
+        <div class="pay-subtitle">Complete your appointment booking</div>
+      </div>
+      <div class="amount-badge"><div class="amount-num">₹ 500</div><div class="amount-label">Consultation Fee · PawCare</div></div>
+
+      <form id="payment-form" method="POST" action="/payment/process" data-method="{{ method }}">
+        <input type="hidden" name="appt_id" value="{{ appt_id }}">
+
+        <div class="pay-section" data-for="upi">
+          <div class="upi-box"><span class="upi-qr">📲</span><div class="upi-id">pawcare@upi</div><div class="upi-note">Scan QR or pay to UPI ID</div></div>
+          <div class="form-group"><label>Your UPI ID (confirmation)</label><input type="text" placeholder="yourname@upi"></div>
+        </div>
+
+        <div class="pay-section" data-for="card">
+          <div class="form-group"><label>Card Number</label><input type="text" placeholder="1234 5678 9012 3456" maxlength="19"></div>
+          <div class="form-twin">
+            <div class="form-group"><label>Expiry</label><input type="text" placeholder="MM/YY" maxlength="5"></div>
+            <div class="form-group"><label>CVV</label><input type="password" placeholder="•••" maxlength="4"></div>
+          </div>
+          <div class="form-group"><label>Name on Card</label><input type="text" placeholder="Your Full Name"></div>
+        </div>
+
+        <div class="pay-section" data-for="netbanking">
+          <div class="form-group"><label>Select Bank</label>
+            <select><option value="">— Choose Bank —</option><option>SBI</option><option>HDFC Bank</option><option>ICICI Bank</option><option>Axis Bank</option><option>Kotak Mahindra Bank</option><option>Other</option></select>
+          </div>
+          <div class="form-group"><label>Net Banking User ID</label><input type="text" placeholder="Net Banking username"></div>
+        </div>
+
+        <button type="submit" class="btn-pay">{% if method=='upi' %}Verify & Confirm 📱{% elif method=='card' %}Pay ₹500 Securely 💳{% elif method=='netbanking' %}Proceed to Bank 🏦{% else %}Confirm Appointment ✅{% endif %}</button>
+      </form>
+      <div class="secure-note">🔒 256-bit SSL encrypted · Your data is safe</div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+<!-- ════════════════════════════════════════════
+     PAGE: SUCCESS
+════════════════════════════════════════════ -->
+{% if page == 'success' %}
+<div class="success-page">
+  <nav style="display:flex;justify-content:space-between;align-items:center;padding:1rem 3rem;background:white;border-bottom:1px solid var(--border);">
+    <a href="/" class="logo">Paw<span>Care</span></a>
+    <a href="/dashboard" style="font-size:.9rem;color:var(--muted);text-decoration:none;">← My Dashboard</a>
+  </nav>
+  <div class="success-body">
+    <div class="success-card">
+      <div class="success-icon">🐾</div>
+      <span class="confetti">🎉 ✨ 🎊</span>
+      <div class="success-title">Appointment Confirmed!</div>
+      <div class="success-sub">Your pet care appointment has been successfully booked. We'll see you soon!</div>
+      {% if appt %}
+      <div class="appt-details">
+        <div class="detail-row"><span class="detail-key">Booking ID</span><span class="detail-val">#{{ appt.id }}</span></div>
+        <div class="detail-row"><span class="detail-key">Pet</span><span class="detail-val">{{ appt.pet_name }} ({{ appt.pet_type }})</span></div>
+        <div class="detail-row"><span class="detail-key">Service</span><span class="detail-val">{{ appt.service }}</span></div>
+        {% if appt.doctor_name %}<div class="detail-row"><span class="detail-key">Doctor</span><span class="detail-val">{{ appt.doctor_name }}</span></div>{% endif %}
+        <div class="detail-row"><span class="detail-key">Date</span><span class="detail-val">{{ appt.pref_date }}</span></div>
+        <div class="detail-row"><span class="detail-key">Payment</span><span class="detail-val" style="text-transform:capitalize;">{{ appt.payment_method }}</span></div>
+        <div class="detail-row"><span class="detail-key">Status</span><span class="detail-val" style="color:var(--sage-dark);">{{ appt.status }}</span></div>
+      </div>
+      {% endif %}
+      <div class="btn-group">
+        <a href="/dashboard"    class="btn-primary">Go to Dashboard →</a>
+        <a href="/appointments" class="btn-secondary">View All Appointments</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+<!-- ════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════ -->
+<script>
+// Auto-dismiss flash messages
+document.querySelectorAll('.flash').forEach(el => {
+  setTimeout(() => {
+    el.style.transition = 'opacity .5s, transform .5s';
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(-10px)';
+    setTimeout(() => el.remove(), 500);
+  }, 4000);
+});
+
+// Doctor AJAX filter (home page)
+const filterBtns = document.querySelectorAll('[data-spec-filter]');
+const docGrid    = document.getElementById('doctors-grid');
+
+if (filterBtns.length && docGrid) {
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const spec = btn.dataset.specFilter;
+      docGrid.style.opacity = '.4';
+      fetch(`/api/doctors?specialization=${encodeURIComponent(spec)}`)
+        .then(r => r.json())
+        .then(docs => {
+          if (docs.length === 0) {
+            docGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);padding:2rem;">No doctors found for this specialization.</p>';
+          } else {
+            docGrid.innerHTML = docs.map(d => `
+              <div class="vet-card">
+                <div class="vet-img" style="background:${d.bg_color}">${d.emoji}</div>
+                <div class="vet-body">
+                  <div class="vet-card-name">${d.name}</div>
+                  <div class="vet-card-spec">${d.specialization}</div>
+                  <div style="font-size:.8rem;color:var(--muted);line-height:1.6;margin-bottom:.4rem;">${d.experience} · ${d.qualification}</div>
+                  <div class="vet-card-footer">
+                    ${d.status === 'available'
+                      ? `<span class="avail-badge avail-available">🟢 Available</span><button class="book-now-btn" data-doctor-id="${d.id}" data-doctor-name="${d.name}">Book →</button>`
+                      : `<span class="avail-badge avail-unavailable">🔴 Unavailable</span><span style="font-size:.78rem;color:var(--muted)">—</span>`}
+                  </div>
+                </div>
+              </div>`).join('');
+          }
+          docGrid.style.opacity = '1';
+          attachBook();
+        })
+        .catch(() => { docGrid.style.opacity = '1'; });
+    });
+  });
+}
+
+// Book-now buttons → pre-fill doctor select and scroll to form
+function attachBook() {
+  document.querySelectorAll('.book-now-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sel = document.getElementById('doctor_id');
+      if (sel) { sel.value = btn.dataset.doctorId; sel.style.borderColor = 'var(--sage-dark)'; }
+      const sec = document.getElementById('book');
+      if (sec) sec.scrollIntoView({ behavior:'smooth' });
+    });
+  });
+}
+attachBook();
+
+// Payment page: show relevant section
+const payForm = document.getElementById('payment-form');
+if (payForm) {
+  const m = payForm.dataset.method;
+  document.querySelectorAll('.pay-section').forEach(s => {
+    s.style.display = s.dataset.for === m ? 'block' : 'none';
+  });
+}
+
+// Status badge colors
+document.querySelectorAll('.status-badge').forEach(b => {
+  const s = b.textContent.trim();
+  const map = {
+    'Pending'  : ['#FEF3C7','#92400E'],
+    'Confirmed': ['#DBEAFE','#1E40AF'],
+    'Completed': ['#D1FAE5','#065F46'],
+    'Cancelled': ['#FEE2E2','#991B1B'],
+    'Paid'     : ['#D1FAE5','#065F46'],
+  };
+  if (map[s]) { b.style.background = map[s][0]; b.style.color = map[s][1]; }
+});
+
+// Admin: confirm before delete
+document.querySelectorAll('[data-confirm]').forEach(btn => {
+  btn.addEventListener('click', e => { if (!confirm(btn.dataset.confirm)) e.preventDefault(); });
+});
+</script>
 
 </body>
 </html>

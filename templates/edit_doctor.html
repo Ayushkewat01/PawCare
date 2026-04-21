@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Doctor — PawCare Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --cream: #FDF8F2; --sage: #7A9E7E; --sage-dark: #4A6B4E; --sage-light: #C8DEC9; --charcoal: #2C2C2A; --muted: #7A7A72; --border: rgba(44,44,42,0.1); }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); min-height: 100vh; }
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 4rem; background: var(--charcoal); }
+  .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: white; text-decoration: none; }
+  .logo span { color: var(--sage-light); }
+  .nav-back { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.9rem; }
+  .nav-back:hover { color: white; }
+  .flash-wrap { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 500; display: flex; flex-direction: column; gap: 0.5rem; width: 100%; max-width: 420px; }
+  .flash-toast { padding: 0.9rem 1.2rem; border-radius: 12px; text-align: center; font-size: 0.9rem; box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+  .flash-toast.success { background: #EAF3DE; color: #3B6D11; }
+  .flash-toast.error   { background: #FDE8E8; color: #9B1C1C; }
+  .container { max-width: 600px; margin: 3rem auto; padding: 0 2rem; }
+  .card { background: white; border-radius: 24px; padding: 2.5rem; border: 1px solid var(--border); box-shadow: 0 8px 24px rgba(44,44,42,0.06); }
+  .card-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; margin-bottom: 2rem; }
+  .form-group { margin-bottom: 1.3rem; }
+  .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .form-group input, .form-group select {
+    width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--border);
+    border-radius: 12px; font-size: 0.9rem; font-family: 'DM Sans', sans-serif;
+    color: var(--charcoal); background: var(--cream); outline: none; transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--sage-dark); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .btn-primary { width: 100%; background: var(--sage-dark); color: white; border: none; padding: 0.9rem; border-radius: 12px; font-size: 0.95rem; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: background 0.2s; }
+  .btn-primary:hover { background: var(--sage); }
+  .btn-cancel { display: block; text-align: center; margin-top: 1rem; color: var(--muted); font-size: 0.9rem; text-decoration: none; }
+  .btn-cancel:hover { color: var(--charcoal); }
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">Paw<span>Care</span></a>
+  <a href="/admin" class="nav-back">← Back to Admin</a>
+</nav>
+<div class="flash-wrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash-toast {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+</div>
+<div class="container">
+  <div class="card">
+    <div class="card-title">✏️ Edit Doctor</div>
+    <form method="POST" action="/edit_doctor/{{ doctor.id }}">
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" name="name" required value="{{ doctor.name }}">
+      </div>
+      <div class="form-group">
+        <label>Specialization *</label>
+        <input type="text" name="specialization" required value="{{ doctor.specialization }}">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Experience</label>
+          <input type="text" name="experience" value="{{ doctor.experience }}">
+        </div>
+        <div class="form-group">
+          <label>Qualification</label>
+          <input type="text" name="qualification" value="{{ doctor.qualification }}">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Status</label>
+          <select name="status">
+            <option value="available"   {% if doctor.status == 'available'   %}selected{% endif %}>🟢 Available</option>
+            <option value="unavailable" {% if doctor.status == 'unavailable' %}selected{% endif %}>🔴 Unavailable</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Emoji Icon</label>
+          <input type="text" name="emoji" value="{{ doctor.emoji }}">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Rating (0–5)</label>
+          <input type="number" name="rating" value="{{ doctor.rating }}" min="0" max="5" step="0.1">
+        </div>
+        <div class="form-group">
+          <label>Card Background Color</label>
+          <input type="color" name="bg_color" value="{{ doctor.bg_color }}" style="height:2.8rem;padding:0.2rem;">
+        </div>
+      </div>
+      <button type="submit" class="btn-primary">Save Changes</button>
+      <a href="/admin" class="btn-cancel">Cancel</a>
+    </form>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

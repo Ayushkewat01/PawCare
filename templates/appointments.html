@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Appointments — PawCare</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FDF8F2;
+    --sage: #7A9E7E;
+    --sage-dark: #4A6B4E;
+    --sage-light: #C8DEC9;
+    --terracotta: #C97B4B;
+    --charcoal: #2C2C2A;
+    --muted: #7A7A72;
+    --border: rgba(44,44,42,0.1);
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); min-height: 100vh; }
+
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 4rem; background: white; border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--charcoal); text-decoration: none; }
+  .logo span { color: var(--sage-dark); }
+  .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+  .nav-links a { text-decoration: none; font-size: 0.9rem; font-weight: 500; color: var(--muted); transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--sage-dark); }
+  .nav-links .nav-badge { background: var(--sage-dark); color: white; padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600; }
+
+  .flash-wrap { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 500; display: flex; flex-direction: column; gap: 0.5rem; width: 100%; max-width: 420px; pointer-events: none; }
+  .flash-toast { padding: 0.9rem 1.2rem; border-radius: 12px; text-align: center; font-size: 0.9rem; box-shadow: 0 8px 24px rgba(0,0,0,0.12); pointer-events: all; }
+  .flash-toast.success { background: #EAF3DE; color: #3B6D11; }
+  .flash-toast.error   { background: #FDE8E8; color: #9B1C1C; }
+  .flash-toast.info    { background: #E1EFFE; color: #1E429F; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; }
+
+  .page-header { margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; }
+  .btn-book {
+    background: var(--sage-dark); color: white; border: none;
+    padding: 0.75rem 1.6rem; border-radius: 50px; font-size: 0.9rem; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none;
+    transition: background 0.2s;
+  }
+  .btn-book:hover { background: var(--sage); }
+
+  /* Cards layout */
+  .appt-list { display: flex; flex-direction: column; gap: 1rem; }
+
+  .appt-card {
+    background: white; border-radius: 18px; padding: 1.5rem;
+    border: 1px solid var(--border);
+    display: grid; grid-template-columns: auto 1fr auto;
+    gap: 1.2rem; align-items: center;
+    transition: box-shadow 0.2s;
+  }
+  .appt-card:hover { box-shadow: 0 8px 24px rgba(44,44,42,0.08); }
+
+  .appt-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem; flex-shrink: 0;
+  }
+
+  .appt-main { }
+  .appt-pet { font-weight: 700; font-size: 1rem; margin-bottom: 0.2rem; }
+  .appt-service { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.4rem; }
+  .appt-meta { display: flex; flex-wrap: wrap; gap: 0.8rem; font-size: 0.8rem; color: var(--muted); }
+  .appt-meta span { display: flex; align-items: center; gap: 0.3rem; }
+
+  .appt-right { text-align: right; flex-shrink: 0; }
+  .status-badge { display: inline-block; padding: 0.35rem 0.9rem; border-radius: 50px; font-size: 0.78rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .pay-badge { font-size: 0.75rem; color: var(--muted); }
+
+  .empty-state { text-align: center; padding: 4rem; background: white; border-radius: 20px; border: 1px solid var(--border); }
+  .empty-icon { font-size: 4rem; display: block; margin-bottom: 1rem; }
+  .empty-state p { color: var(--muted); margin-bottom: 1.5rem; }
+
+  /* Status pill styles set by JS */
+
+  @media (max-width: 700px) {
+    nav { padding: 1rem 1.5rem; }
+    .container { padding: 2rem 1.5rem; }
+    .appt-card { grid-template-columns: auto 1fr; }
+    .appt-right { grid-column: 1/-1; text-align: left; }
+    .page-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Paw<span>Care</span></a>
+  <div class="nav-links">
+    <a href="/dashboard">Dashboard</a>
+    <a href="/appointments" class="active">My Appointments</a>
+    <a href="/profile">Profile</a>
+    <a href="/logout" class="nav-badge">Logout</a>
+  </div>
+</nav>
+
+<div class="flash-wrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash-toast {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+</div>
+
+<div class="container">
+
+  <div class="page-header">
+    <div class="page-title">📋 My Appointments</div>
+    <a href="/#book" class="btn-book">+ Book New</a>
+  </div>
+
+  {% if appts %}
+  <div class="appt-list">
+    {% for a in appts %}
+    {% set pet_emojis = {'Dog': '🐕', 'Cat': '🐈', 'Bird': '🐦', 'Rabbit': '🐇', 'Reptile': '🦎'} %}
+    {% set pet_colors = {'Dog': '#C8DEC9', 'Cat': '#F2D5BC', 'Bird': '#EAF3DE', 'Rabbit': '#EEEDFE', 'Reptile': '#FDE8E8'} %}
+    <div class="appt-card">
+      <div class="appt-icon" style="background: {{ pet_colors.get(a.pet_type, '#F2D5BC') }}">
+        {{ pet_emojis.get(a.pet_type, '🐾') }}
+      </div>
+      <div class="appt-main">
+        <div class="appt-pet">{{ a.pet_name }} <span style="font-weight:400;color:var(--muted);">({{ a.pet_type }})</span></div>
+        <div class="appt-service">{{ a.service }}</div>
+        <div class="appt-meta">
+          <span>📅 {{ a.pref_date }}</span>
+          <span>🩺 {{ a.doctor_name or 'Any Available Vet' }}</span>
+          <span>💳 {{ a.payment_method|capitalize }}</span>
+          {% if a.description %}<span>📝 {{ a.description[:40] }}{% if a.description|length > 40 %}…{% endif %}</span>{% endif %}
+        </div>
+      </div>
+      <div class="appt-right">
+        <div><span class="status-badge">{{ a.status }}</span></div>
+        <div class="pay-badge">
+          {% if a.payment_status %}
+            Payment: <strong>{{ a.payment_status }}</strong>
+          {% endif %}
+        </div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:0.3rem;">
+          #{{ a.id }}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <span class="empty-icon">🐾</span>
+    <p>You haven't made any appointments yet.</p>
+    <a href="/#book" class="btn-book">Book Your First Appointment</a>
+  </div>
+  {% endif %}
+
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment — PawCare</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #FDF8F2;
+    --sage: #7A9E7E;
+    --sage-dark: #4A6B4E;
+    --sage-light: #C8DEC9;
+    --charcoal: #2C2C2A;
+    --muted: #7A7A72;
+    --border: rgba(44,44,42,0.1);
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--charcoal); min-height: 100vh; display: flex; flex-direction: column; }
+
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 4rem; background: white; border-bottom: 1px solid var(--border);
+  }
+  .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--charcoal); text-decoration: none; }
+  .logo span { color: var(--sage-dark); }
+
+  .flash-wrap { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 500; display: flex; flex-direction: column; gap: 0.5rem; width: 100%; max-width: 420px; }
+  .flash-toast { padding: 0.9rem 1.2rem; border-radius: 12px; text-align: center; font-size: 0.9rem; box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+  .flash-toast.success { background: #EAF3DE; color: #3B6D11; }
+  .flash-toast.error   { background: #FDE8E8; color: #9B1C1C; }
+
+  .page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 3rem 2rem; }
+
+  .pay-container {
+    background: white; border-radius: 24px; padding: 2.5rem;
+    width: 100%; max-width: 480px;
+    box-shadow: 0 20px 60px rgba(44,44,42,0.1);
+  }
+
+  .pay-header { text-align: center; margin-bottom: 2rem; }
+  .pay-icon { font-size: 3rem; display: block; margin-bottom: 0.8rem; }
+  .pay-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .pay-subtitle { color: var(--muted); font-size: 0.9rem; }
+
+  .amount-badge {
+    background: var(--sage-light); border-radius: 16px; padding: 1rem;
+    text-align: center; margin-bottom: 2rem;
+  }
+  .amount-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--sage-dark); }
+  .amount-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+
+  .form-group { margin-bottom: 1.2rem; }
+  .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .form-group input, .form-group select {
+    width: 100%; padding: 0.8rem 1rem; border: 1.5px solid var(--border);
+    border-radius: 12px; font-size: 0.95rem; font-family: 'DM Sans', sans-serif;
+    color: var(--charcoal); background: var(--cream); outline: none; transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--sage-dark); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  .upi-box {
+    background: #F0F7FF; border-radius: 16px; padding: 1.5rem; text-align: center; margin-bottom: 1.5rem;
+  }
+  .upi-qr { font-size: 5rem; display: block; margin-bottom: 0.5rem; }
+  .upi-id { font-weight: 700; font-size: 1.1rem; color: #1E429F; margin-bottom: 0.3rem; }
+  .upi-note { font-size: 0.8rem; color: var(--muted); }
+
+  .btn-pay {
+    width: 100%; background: var(--sage-dark); color: white; border: none;
+    padding: 1rem; border-radius: 14px; font-size: 1rem; font-weight: 700;
+    font-family: 'DM Sans', sans-serif; cursor: pointer; transition: background 0.2s;
+    margin-top: 0.5rem;
+  }
+  .btn-pay:hover { background: var(--sage); }
+
+  .secure-note { display: flex; align-items: center; justify-content: center; gap: 0.4rem; font-size: 0.78rem; color: var(--muted); margin-top: 1rem; }
+
+  .pay-section { display: none; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Paw<span>Care</span></a>
+  <span style="font-size:0.85rem;color:var(--muted);">Secure Checkout 🔒</span>
+</nav>
+
+<div class="flash-wrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash-toast {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+</div>
+
+<div class="page">
+  <div class="pay-container">
+
+    <div class="pay-header">
+      <span class="pay-icon">
+        {% if method == 'upi' %}📱
+        {% elif method == 'card' %}💳
+        {% elif method == 'netbanking' %}🏦
+        {% else %}✅{% endif %}
+      </span>
+      <div class="pay-title">
+        {% if method == 'upi' %}UPI Payment
+        {% elif method == 'card' %}Card Payment
+        {% elif method == 'netbanking' %}Net Banking
+        {% else %}Confirm Booking{% endif %}
+      </div>
+      <div class="pay-subtitle">Complete your appointment booking</div>
+    </div>
+
+    <div class="amount-badge">
+      <div class="amount-num">₹ 500</div>
+      <div class="amount-label">Consultation Fee · PawCare</div>
+    </div>
+
+    <form id="payment-form" method="POST" action="/payment/process" data-method="{{ method }}">
+      <input type="hidden" name="appt_id" value="{{ appt_id }}">
+
+      <!-- UPI -->
+      <div class="pay-section" data-for="upi">
+        <div class="upi-box">
+          <span class="upi-qr">📲</span>
+          <div class="upi-id">pawcare@upi</div>
+          <div class="upi-note">Scan QR or pay to UPI ID above</div>
+        </div>
+        <div class="form-group">
+          <label>Your UPI ID (for confirmation)</label>
+          <input type="text" placeholder="yourname@upi" required>
+        </div>
+      </div>
+
+      <!-- CARD -->
+      <div class="pay-section" data-for="card">
+        <div class="form-group">
+          <label>Card Number</label>
+          <input type="text" placeholder="1234 5678 9012 3456" maxlength="19" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Expiry</label>
+            <input type="text" placeholder="MM/YY" maxlength="5" required>
+          </div>
+          <div class="form-group">
+            <label>CVV</label>
+            <input type="password" placeholder="•••" maxlength="4" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Name on Card</label>
+          <input type="text" placeholder="Your Full Name" required>
+        </div>
+      </div>
+
+      <!-- NET BANKING -->
+      <div class="pay-section" data-for="netbanking">
+        <div class="form-group">
+          <label>Select Your Bank</label>
+          <select required>
+            <option value="">— Choose Bank —</option>
+            <option>SBI – State Bank of India</option>
+            <option>HDFC Bank</option>
+            <option>ICICI Bank</option>
+            <option>Axis Bank</option>
+            <option>Kotak Mahindra Bank</option>
+            <option>Yes Bank</option>
+            <option>PNB – Punjab National Bank</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>User ID / Net Banking ID</label>
+          <input type="text" placeholder="Net Banking username" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-pay">
+        {% if method == 'upi' %}Verify & Confirm Payment 📱
+        {% elif method == 'card' %}Pay ₹500 Securely 💳
+        {% elif method == 'netbanking' %}Proceed to Bank 🏦
+        {% else %}Confirm Appointment ✅{% endif %}
+      </button>
+    </form>
+
+    <div class="secure-note">🔒 256-bit SSL encrypted · Your data is safe</div>
+
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
